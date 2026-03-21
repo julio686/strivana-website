@@ -35,30 +35,25 @@ const Navigation = () => {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
           ? 'bg-white/90 backdrop-blur-xl shadow-soft py-3'
-          : 'bg-transparent py-5'
+          : 'bg-transparent py-4'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <nav className="flex items-center justify-between">
-          {/* Logo */}
+          {/* Logo - Same height as "See Pricing" button (~44-48px) */}
           <a 
             href="#" 
-            className="flex items-center gap-3 group"
+            className="flex items-center group"
             onClick={(e) => {
               e.preventDefault();
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
           >
-            <div className="relative">
-              <img 
-                src="/logo.jpg" 
-                alt="Strivana" 
-                className="h-14 w-auto transition-transform duration-300 group-hover:scale-105"
-              />
-            </div>
-            <span className="hidden sm:block text-xl font-display font-bold text-strivana-dark group-hover:text-strivana-purple transition-colors">
-              Strivana
-            </span>
+            <img 
+              src="./logo.jpg" 
+              alt="Strivana" 
+              className="h-11 sm:h-12 w-auto transition-transform duration-300 group-hover:scale-105"
+            />
           </a>
 
           {/* Desktop Navigation */}
