@@ -51,13 +51,12 @@ const Footer = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8">
           {/* Brand Column */}
           <div className="lg:col-span-2">
-            <a href="#" className="inline-flex items-center gap-3 mb-6 group">
+            <a href="#" className="inline-block mb-6 group">
               <img 
-                src="/logo.jpg" 
+                src="./logo.jpg" 
                 alt="Strivana" 
-                className="h-16 w-auto brightness-0 invert transition-transform duration-300 group-hover:scale-105"
+                className="h-12 w-auto brightness-0 invert transition-transform duration-300 group-hover:scale-105"
               />
-              <span className="text-2xl font-display font-bold text-white">Strivana</span>
             </a>
             <p className="text-gray-400 text-sm leading-relaxed mb-6 max-w-sm">
               Strivana connects businesses with university-educated virtual assistants from Latin America. 
