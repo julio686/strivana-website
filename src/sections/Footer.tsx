@@ -53,9 +53,12 @@ const Footer = () => {
           <div className="lg:col-span-2">
             <a href="#" className="inline-block mb-6 group">
               <img 
-                src="https://julio686.github.io/strivana-website/logo.jpg" 
+                src="https://julio686.github.io/strivana-website/logo.jpg?v=2" 
                 alt="Strivana" 
                 className="h-12 w-auto brightness-0 invert transition-transform duration-300 group-hover:scale-105"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                }}
               />
             </a>
             <p className="text-gray-400 text-sm leading-relaxed mb-6 max-w-sm">
