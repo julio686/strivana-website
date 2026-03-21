@@ -53,7 +53,7 @@ const Footer = () => {
           <div className="lg:col-span-2">
             <a href="#" className="inline-block mb-6 group">
               <img 
-                src="./logo.jpg" 
+                src="logo.jpg" 
                 alt="Strivana" 
                 className="h-12 w-auto brightness-0 invert transition-transform duration-300 group-hover:scale-105"
               />
