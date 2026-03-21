@@ -50,7 +50,7 @@ const Navigation = () => {
             }}
           >
             <img 
-              src="logo.jpg" 
+              src="https://julio686.github.io/strivana-website/logo.jpg" 
               alt="Strivana" 
               className="h-11 sm:h-12 w-auto transition-transform duration-300 group-hover:scale-105"
             />
