@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'; // Trigger rebuild
 import { Menu, X } from 'lucide-react';
 
 const Navigation = () => {
