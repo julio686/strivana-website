@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import './App.css';
 import Navigation from './sections/Navigation';
 import Hero from './sections/Hero';
@@ -10,55 +11,34 @@ import CTA from './sections/CTA';
 import Footer from './sections/Footer';
 import ChatBot from './components/ChatBot';
 import AdminLayout from './admin/AdminLayout';
+import Careers from './pages/Careers';
 
-function App() {
+// Main website content
+const MainWebsite = () => {
   const [showChat, setShowChat] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    // Check if we're on the admin route
-    const checkAdminRoute = () => {
-      const hash = window.location.hash;
-      setIsAdmin(hash === '#admin' || hash.startsWith('#admin/'));
+    // Intersection Observer for scroll animations
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.1,
     };
 
-    checkAdminRoute();
-    window.addEventListener('hashchange', checkAdminRoute);
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
 
-    // Intersection Observer for scroll animations (only on main site)
-    if (!isAdmin) {
-      const observerOptions = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.1,
-      };
+    const revealElements = document.querySelectorAll('.reveal');
+    revealElements.forEach((el) => observer.observe(el));
 
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-          }
-        });
-      }, observerOptions);
+    return () => observer.disconnect();
+  }, []);
 
-      const revealElements = document.querySelectorAll('.reveal');
-      revealElements.forEach((el) => observer.observe(el));
-
-      return () => {
-        observer.disconnect();
-        window.removeEventListener('hashchange', checkAdminRoute);
-      };
-    }
-
-    return () => window.removeEventListener('hashchange', checkAdminRoute);
-  }, [isAdmin]);
-
-  // Render Admin Layout
-  if (isAdmin) {
-    return <AdminLayout />;
-  }
-
-  // Render Main Website
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
@@ -99,6 +79,56 @@ function App() {
       </a>
     </div>
   );
+};
+
+// Scroll to top on route change
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  
+  return null;
+};
+
+// Router wrapper
+const AppRouter = () => {
+  return (
+    <BrowserRouter>
+      <ScrollToTop />
+      <Routes>
+        <Route path="/" element={<MainWebsite />} />
+        <Route path="/careers" element={<Careers />} />
+        <Route path="*" element={<MainWebsite />} />
+      </Routes>
+    </BrowserRouter>
+  );
+};
+
+function App() {
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    // Check if we're on the admin route
+    const checkAdminRoute = () => {
+      const hash = window.location.hash;
+      setIsAdmin(hash === '#admin' || hash.startsWith('#admin/'));
+    };
+
+    checkAdminRoute();
+    window.addEventListener('hashchange', checkAdminRoute);
+
+    return () => window.removeEventListener('hashchange', checkAdminRoute);
+  }, []);
+
+  // Render Admin Layout
+  if (isAdmin) {
+    return <AdminLayout />;
+  }
+
+  // Render Main Website with Router
+  return <AppRouter />;
 }
 
 export default App;
