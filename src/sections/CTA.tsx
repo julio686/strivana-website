@@ -42,8 +42,8 @@ const CTA = () => {
     setIsSubmitting(true);
 
     try {
-      // Using FormSubmit.co - NO SIGNUP REQUIRED
-      // Sends directly to: julio@strivanallc.com, george@strivanallc.com, info@strivanallc.com
+      // Using FormSubmit.co - sends directly to your email
+      // First submission requires email verification, then it works automatically
       const form = e.target as HTMLFormElement;
       const formDataObj = new FormData(form);
       
@@ -63,7 +63,7 @@ const CTA = () => {
       }
     } catch (error) {
       console.error('Form error:', error);
-      toast.error('Something went wrong. Please email us directly at info@strivanallc.com');
+      toast.error('Form submission failed. Please email us directly at info@strivanallc.com');
     } finally {
       setIsSubmitting(false);
     }
