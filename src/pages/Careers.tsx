@@ -10,7 +10,9 @@ import {
   Loader2,
   CheckCircle,
   MapPin,
-  GraduationCap
+  GraduationCap,
+  Globe,
+  Coffee
 } from 'lucide-react';
 import { toast } from 'sonner';
 import Navigation from '../sections/Navigation';
@@ -53,32 +55,42 @@ const Careers = () => {
     {
       icon: DollarSign,
       title: 'Competitive Pay',
-      description: 'Earn $8-15/hour based on experience and skills. Weekly payments directly to your account.',
+      description: 'Earn $8-15/hour based on experience. Weekly payments directly to your account.',
     },
     {
       icon: Clock,
       title: 'Flexible Hours',
-      description: 'Work from anywhere with flexible scheduling. Choose part-time or full-time based on your availability.',
+      description: 'Work from anywhere with flexible scheduling. Choose part-time or full-time.',
     },
     {
       icon: Laptop,
-      title: 'Remote First',
-      description: '100% remote work environment. No commuting required. Work from the comfort of your home.',
+      title: '100% Remote',
+      description: 'No commuting required. Work from the comfort of your home.',
     },
     {
       icon: TrendingUp,
       title: 'Career Growth',
-      description: 'Clear advancement paths. Get promoted to senior roles, team lead, or specialist positions.',
+      description: 'Clear advancement paths. Get promoted to senior roles and team lead positions.',
     },
     {
       icon: GraduationCap,
-      title: 'Training & Development',
-      description: 'Free training programs, skill certifications, and ongoing professional development support.',
+      title: 'Free Training',
+      description: 'Access to training programs, skill certifications, and professional development.',
     },
     {
       icon: Heart,
       title: 'Great Culture',
-      description: 'Join a supportive community of professionals. Regular team events and recognition programs.',
+      description: 'Join a supportive community. Regular team events and recognition programs.',
+    },
+    {
+      icon: Globe,
+      title: 'US Clients',
+      description: 'Work with top US companies. Build your international experience.',
+    },
+    {
+      icon: Coffee,
+      title: 'Work-Life Balance',
+      description: 'Set your own schedule. Take time off when you need it.',
     },
   ];
 
@@ -88,48 +100,54 @@ const Careers = () => {
       department: 'Administration',
       type: 'Full-time / Part-time',
       location: 'Remote (Latin America)',
+      salary: '$10-15/hour',
       description: 'Support C-level executives with calendar management, email handling, travel coordination, and strategic projects.',
-      requirements: ['3+ years executive assistant experience', 'Excellent English communication', 'Proficient in Google Workspace & Microsoft Office'],
+      requirements: ['3+ years executive assistant experience', 'Excellent English communication', 'Proficient in Google Workspace & Microsoft Office', 'Strong organizational skills'],
     },
     {
       title: 'Customer Service Representative',
       department: 'Customer Support',
       type: 'Full-time / Part-time',
       location: 'Remote (Latin America)',
+      salary: '$8-12/hour',
       description: 'Handle customer inquiries via email, chat, and phone. Provide exceptional service and resolve issues efficiently.',
-      requirements: ['2+ years customer service experience', 'Native or fluent English', 'Experience with CRM systems'],
+      requirements: ['2+ years customer service experience', 'Native or fluent English', 'Experience with CRM systems', 'Problem-solving skills'],
     },
     {
       title: 'Social Media Manager',
       department: 'Marketing',
       type: 'Part-time',
       location: 'Remote (Latin America)',
+      salary: '$10-14/hour',
       description: 'Manage social media accounts, create engaging content, schedule posts, and analyze performance metrics.',
-      requirements: ['2+ years social media management', 'Content creation skills', 'Knowledge of analytics tools'],
+      requirements: ['2+ years social media management', 'Content creation skills', 'Knowledge of analytics tools', 'Creative mindset'],
     },
     {
       title: 'Bookkeeping Assistant',
       department: 'Finance',
       type: 'Part-time',
       location: 'Remote (Latin America)',
+      salary: '$10-13/hour',
       description: 'Assist with accounts payable/receivable, expense tracking, invoicing, and basic financial reporting.',
-      requirements: ['Accounting or finance background', 'Experience with QuickBooks or similar', 'Attention to detail'],
+      requirements: ['Accounting or finance background', 'Experience with QuickBooks or similar', 'Attention to detail', 'Basic Excel skills'],
     },
     {
       title: 'Sales Development Representative',
       department: 'Sales',
       type: 'Full-time',
       location: 'Remote (Latin America)',
+      salary: '$10-15/hour + Commission',
       description: 'Generate leads, conduct outreach, qualify prospects, and set appointments for the sales team.',
-      requirements: ['2+ years sales experience', 'Excellent communication skills', 'Results-driven mindset'],
+      requirements: ['2+ years sales experience', 'Excellent communication skills', 'Results-driven mindset', 'Cold calling experience'],
     },
     {
       title: 'Project Coordinator',
       department: 'Operations',
       type: 'Full-time',
       location: 'Remote (Latin America)',
+      salary: '$12-15/hour',
       description: 'Coordinate projects, manage timelines, communicate with stakeholders, and ensure deliverables are met.',
-      requirements: ['3+ years project coordination experience', 'Familiarity with project management tools', 'Strong organizational skills'],
+      requirements: ['3+ years project coordination experience', 'Familiarity with project management tools', 'Strong organizational skills', 'Ability to multitask'],
     },
   ];
 
@@ -151,49 +169,21 @@ const Careers = () => {
     setIsSubmitting(true);
 
     try {
-      // Using Formspree for talent submissions
-      const formDataObj = new FormData();
-      formDataObj.append('fullName', formData.fullName);
-      formDataObj.append('email', formData.email);
-      formDataObj.append('phone', formData.phone);
-      formDataObj.append('position', formData.position);
-      formDataObj.append('experience', formData.experience);
-      formDataObj.append('linkedin', formData.linkedin);
-      formDataObj.append('portfolio', formData.portfolio);
-      formDataObj.append('message', formData.message);
-      formDataObj.append('_subject', `Talent Application: ${formData.position} - ${formData.fullName}`);
-      formDataObj.append('_replyto', formData.email);
-
+      const form = e.target as HTMLFormElement;
+      const formDataObj = new FormData(form);
+      
       if (resumeFile) {
         formDataObj.append('attachment', resumeFile);
       }
 
-      // Using FormSubmit.co - free, no signup required
-      const formSubmitData = new FormData();
-      formSubmitData.append('_subject', `Talent Application: ${formData.position} - ${formData.fullName}`);
-      formSubmitData.append('fullName', formData.fullName);
-      formSubmitData.append('email', formData.email);
-      formSubmitData.append('phone', formData.phone);
-      formSubmitData.append('position', formData.position);
-      formSubmitData.append('experience', formData.experience);
-      formSubmitData.append('linkedin', formData.linkedin || 'Not provided');
-      formSubmitData.append('portfolio', formData.portfolio || 'Not provided');
-      formSubmitData.append('message', formData.message);
-      formSubmitData.append('_replyto', formData.email);
-      formSubmitData.append('_cc', 'george@strivanallc.com,info@strivanallc.com');
-
-      if (resumeFile) {
-        formSubmitData.append('attachment', resumeFile);
-      }
-
       const response = await fetch('https://formsubmit.co/ajax/julio@strivanallc.com', {
         method: 'POST',
-        body: formSubmitData
+        body: formDataObj
       });
 
       const data = await response.json();
 
-      if (data.success === 'true' || data.success === true) {
+      if (data.success === 'true' || data.success === true || response.ok) {
         toast.success('Application submitted successfully! We will review your application and get back to you within 3-5 business days.');
         setFormData({
           fullName: '',
@@ -206,12 +196,13 @@ const Careers = () => {
           message: '',
         });
         setResumeFile(null);
+        form.reset();
       } else {
         throw new Error('Form submission failed');
       }
     } catch (error) {
       console.error('Form error:', error);
-      toast.error('Something went wrong. Please try again or email us directly at info@strivanallc.com');
+      toast.error('Something went wrong. Please email us directly at info@strivanallc.com');
     } finally {
       setIsSubmitting(false);
     }
@@ -224,33 +215,33 @@ const Careers = () => {
       {/* Hero Section */}
       <section 
         ref={heroRef}
-        className="pt-32 pb-20 bg-gradient-to-br from-strivana-purple-light via-white to-strivana-blue-light"
+        className="pt-32 pb-20 bg-gradient-to-br from-strivana-purple via-strivana-purple-dark to-strivana-dark"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className={`text-center transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-strivana-purple/10 rounded-full text-strivana-purple text-sm font-medium mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full text-white text-sm font-medium mb-6">
               <Briefcase size={16} />
               <span>Join Our Team</span>
             </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold text-strivana-dark mb-6">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold text-white mb-6">
               Build Your Career with{' '}
-              <span className="text-strivana-purple">Strivana</span>
+              <span className="text-strivana-yellow">Strivana</span>
             </h1>
-            <p className="text-lg sm:text-xl text-strivana-gray max-w-3xl mx-auto mb-8">
+            <p className="text-lg sm:text-xl text-white/80 max-w-3xl mx-auto mb-8">
               Join hundreds of talented virtual assistants from Latin America working with top US companies. 
               Enjoy competitive pay, flexible hours, and real growth opportunities.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <a 
                 href="#positions"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-strivana-purple text-white font-medium rounded-full hover:bg-strivana-purple-dark transition-all duration-300 hover:shadow-glow"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-strivana-yellow text-strivana-dark font-medium rounded-full hover:bg-strivana-yellow/90 transition-all duration-300"
               >
                 <Briefcase size={20} />
                 View Open Positions
               </a>
               <a 
                 href="#apply"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-white text-strivana-purple font-medium rounded-full border-2 border-strivana-purple hover:bg-strivana-purple-light transition-all duration-300"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-white/10 text-white font-medium rounded-full border-2 border-white/30 hover:bg-white/20 transition-all duration-300"
               >
                 <Send size={20} />
                 Submit Application
@@ -261,17 +252,17 @@ const Careers = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-strivana-dark">
+      <section className="py-16 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
               { number: '500+', label: 'VAs Hired' },
               { number: '$8-15', label: 'Hourly Rate' },
               { number: '100%', label: 'Remote' },
-              { number: '4.8/5', label: 'VA Satisfaction' },
+              { number: '4.9/5', label: 'VA Satisfaction' },
             ].map((stat, index) => (
               <div key={index} className="text-center">
-                <div className="text-3xl sm:text-4xl font-display font-bold text-white mb-2">
+                <div className="text-3xl sm:text-4xl font-display font-bold text-strivana-purple mb-2">
                   {stat.number}
                 </div>
                 <div className="text-strivana-gray text-sm">{stat.label}</div>
@@ -282,7 +273,7 @@ const Careers = () => {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-24 bg-white">
+      <section className="py-24 bg-strivana-purple-light/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-display font-bold text-strivana-dark mb-4">
@@ -293,21 +284,52 @@ const Careers = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {benefits.map((benefit, index) => (
               <div 
                 key={index}
-                className="bg-strivana-purple-light/30 rounded-2xl p-8 hover:shadow-soft-lg transition-all duration-300 hover:-translate-y-1"
+                className="bg-white rounded-2xl p-6 hover:shadow-soft-lg transition-all duration-300 hover:-translate-y-1"
               >
-                <div className="w-14 h-14 bg-strivana-purple rounded-xl flex items-center justify-center mb-6">
-                  <benefit.icon size={28} className="text-white" />
+                <div className="w-12 h-12 bg-strivana-purple/10 rounded-xl flex items-center justify-center mb-4">
+                  <benefit.icon size={24} className="text-strivana-purple" />
                 </div>
-                <h3 className="text-xl font-display font-semibold text-strivana-dark mb-3">
+                <h3 className="text-lg font-display font-semibold text-strivana-dark mb-2">
                   {benefit.title}
                 </h3>
                 <p className="text-strivana-gray text-sm leading-relaxed">
                   {benefit.description}
                 </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-display font-bold text-strivana-dark mb-4">
+              How It <span className="text-strivana-purple">Works</span>
+            </h2>
+            <p className="text-strivana-gray max-w-2xl mx-auto">
+              Getting started with Strivana is simple. Follow these steps to begin your remote career.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-4 gap-8">
+            {[
+              { step: '1', title: 'Apply', description: 'Submit your application with your resume and portfolio.' },
+              { step: '2', title: 'Interview', description: 'Complete a video interview with our recruitment team.' },
+              { step: '3', title: 'Get Matched', description: 'We match you with clients based on your skills and preferences.' },
+              { step: '4', title: 'Start Working', description: 'Begin your remote career with competitive pay and benefits.' },
+            ].map((item, index) => (
+              <div key={index} className="text-center">
+                <div className="w-16 h-16 bg-strivana-purple rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl font-display font-bold text-white">{item.step}</span>
+                </div>
+                <h3 className="text-xl font-display font-semibold text-strivana-dark mb-2">{item.title}</h3>
+                <p className="text-strivana-gray text-sm">{item.description}</p>
               </div>
             ))}
           </div>
@@ -326,54 +348,54 @@ const Careers = () => {
             </p>
           </div>
 
-          <div className="space-y-6">
+          <div className="grid lg:grid-cols-2 gap-6">
             {openPositions.map((position, index) => (
               <div 
                 key={index}
                 className="bg-white rounded-2xl p-6 sm:p-8 shadow-soft hover:shadow-soft-lg transition-all duration-300"
               >
-                <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
-                  <div className="flex-1">
-                    <div className="flex flex-wrap items-center gap-3 mb-3">
-                      <h3 className="text-xl font-display font-semibold text-strivana-dark">
-                        {position.title}
-                      </h3>
-                      <span className="px-3 py-1 bg-strivana-purple/10 text-strivana-purple text-xs font-medium rounded-full">
-                        {position.department}
-                      </span>
-                    </div>
-                    <p className="text-strivana-gray mb-4">{position.description}</p>
-                    <div className="flex flex-wrap items-center gap-4 text-sm text-strivana-gray mb-4">
-                      <span className="flex items-center gap-1">
-                        <Clock size={14} />
-                        {position.type}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <MapPin size={14} />
-                        {position.location}
-                      </span>
-                    </div>
-                    <div className="space-y-2">
-                      <p className="text-sm font-medium text-strivana-dark">Requirements:</p>
-                      <ul className="space-y-1">
-                        {position.requirements.map((req, reqIndex) => (
-                          <li key={reqIndex} className="flex items-start gap-2 text-sm text-strivana-gray">
-                            <CheckCircle size={14} className="text-strivana-purple mt-0.5 flex-shrink-0" />
-                            {req}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                  <a
-                    href="#apply"
-                    onClick={() => setFormData(prev => ({ ...prev, position: position.title }))}
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-strivana-purple text-white font-medium rounded-xl hover:bg-strivana-purple-dark transition-all duration-300 whitespace-nowrap"
-                  >
-                    Apply Now
-                    <Send size={16} />
-                  </a>
+                <div className="flex flex-wrap items-center gap-2 mb-3">
+                  <h3 className="text-xl font-display font-semibold text-strivana-dark">
+                    {position.title}
+                  </h3>
+                  <span className="px-3 py-1 bg-strivana-purple/10 text-strivana-purple text-xs font-medium rounded-full">
+                    {position.department}
+                  </span>
                 </div>
+                <p className="text-strivana-gray mb-4">{position.description}</p>
+                <div className="flex flex-wrap items-center gap-4 text-sm text-strivana-gray mb-4">
+                  <span className="flex items-center gap-1">
+                    <Clock size={14} />
+                    {position.type}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <MapPin size={14} />
+                    {position.location}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <DollarSign size={14} />
+                    {position.salary}
+                  </span>
+                </div>
+                <div className="space-y-2 mb-6">
+                  <p className="text-sm font-medium text-strivana-dark">Requirements:</p>
+                  <ul className="space-y-1">
+                    {position.requirements.map((req, reqIndex) => (
+                      <li key={reqIndex} className="flex items-start gap-2 text-sm text-strivana-gray">
+                        <CheckCircle size={14} className="text-strivana-purple mt-0.5 flex-shrink-0" />
+                        {req}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <a
+                  href="#apply"
+                  onClick={() => setFormData(prev => ({ ...prev, position: position.title }))}
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-strivana-purple text-white font-medium rounded-xl hover:bg-strivana-purple-dark transition-all duration-300"
+                >
+                  Apply Now
+                  <Send size={16} />
+                </a>
               </div>
             ))}
           </div>
@@ -394,6 +416,12 @@ const Careers = () => {
 
           <div className="bg-strivana-purple-light/20 rounded-3xl p-8 sm:p-12">
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Hidden fields for FormSubmit.co */}
+              <input type="hidden" name="_subject" value={`Talent Application: ${formData.position || 'General'} - ${formData.fullName || 'Applicant'}`} />
+              <input type="hidden" name="_cc" value="george@strivanallc.com,info@strivanallc.com" />
+              <input type="hidden" name="_template" value="table" />
+              <input type="hidden" name="_autoresponse" value="Thank you for applying to Strivana! We have received your application and will review it within 3-5 business days." />
+
               <div className="grid sm:grid-cols-2 gap-6">
                 <div>
                   <label htmlFor="fullName" className="block text-sm font-medium text-strivana-dark mb-2">
