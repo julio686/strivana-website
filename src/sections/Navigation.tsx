@@ -52,11 +52,14 @@ const Navigation = () => {
             <img 
               src="/logo.jpg" 
               alt="Strivana" 
-              className="h-16 sm:h-20 w-auto transition-transform duration-300 group-hover:scale-105"
-              style={{ maxHeight: '80px' }}
+              className="h-20 sm:h-24 md:h-28 w-auto transition-transform duration-300 group-hover:scale-105 object-contain"
               onError={(e) => {
                 // Fallback to text if image fails to load
                 e.currentTarget.style.display = 'none';
+                const fallback = document.createElement('span');
+                fallback.className = 'text-2xl font-bold text-strivana-purple';
+                fallback.textContent = 'Strivana';
+                e.currentTarget.parentElement?.appendChild(fallback);
               }}
             />
           </a>
