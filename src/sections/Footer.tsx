@@ -14,7 +14,7 @@ const Footer = () => {
     company: [
       { name: 'About Us', href: '#' },
       { name: 'Our Team', href: '#' },
-      { name: 'Careers', href: '/careers', isPage: true },
+      { name: 'Careers', href: '#careers' },
       { name: 'Blog', href: '#' },
     ],
     support: [
@@ -105,21 +105,12 @@ const Footer = () => {
             <ul className="space-y-3">
               {footerLinks.company.map((link) => (
                 <li key={link.name}>
-                  {link.isPage ? (
-                    <a
-                      href={link.href}
-                      className="text-gray-400 text-sm hover:text-strivana-purple transition-colors"
-                    >
-                      {link.name}
-                    </a>
-                  ) : (
-                    <button
-                      onClick={() => scrollToSection(link.href)}
-                      className="text-gray-400 text-sm hover:text-strivana-purple transition-colors"
-                    >
-                      {link.name}
-                    </button>
-                  )}
+                  <button
+                    onClick={() => scrollToSection(link.href)}
+                    className="text-gray-400 text-sm hover:text-strivana-purple transition-colors"
+                  >
+                    {link.name}
+                  </button>
                 </li>
               ))}
             </ul>
