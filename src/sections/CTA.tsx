@@ -20,7 +20,7 @@ const CTA = () => {
           setIsVisible(true);
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.1 }
     );
 
     if (sectionRef.current) {
@@ -30,43 +30,6 @@ const CTA = () => {
     return () => observer.disconnect();
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    try {
-      // Using FormSubmit.co - free, no signup required
-      // Sends to: julio@strivanallc.com, george@strivanallc.com, info@strivanallc.com
-      const formDataObj = new FormData();
-      formDataObj.append('_subject', `New Contact Form from ${formData.name}`);
-      formDataObj.append('name', formData.name);
-      formDataObj.append('email', formData.email);
-      formDataObj.append('company', formData.company || 'Not provided');
-      formDataObj.append('message', formData.message);
-      formDataObj.append('_replyto', formData.email);
-      formDataObj.append('_cc', 'george@strivanallc.com,info@strivanallc.com');
-
-      const response = await fetch('https://formsubmit.co/ajax/julio@strivanallc.com', {
-        method: 'POST',
-        body: formDataObj
-      });
-
-      const data = await response.json();
-
-      if (data.success === 'true' || data.success === true) {
-        toast.success('Thank you! We will get back to you within 24 hours.');
-        setFormData({ name: '', email: '', company: '', message: '' });
-      } else {
-        throw new Error('Form submission failed');
-      }
-    } catch (error) {
-      console.error('Form error:', error);
-      toast.error('Something went wrong. Please try again or email us directly at info@strivanallc.com');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData((prev) => ({
       ...prev,
@@ -74,55 +37,84 @@ const CTA = () => {
     }));
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      // Using FormSubmit.co - NO SIGNUP REQUIRED
+      // Sends directly to: julio@strivanallc.com, george@strivanallc.com, info@strivanallc.com
+      const form = e.target as HTMLFormElement;
+      const formDataObj = new FormData(form);
+      
+      const response = await fetch('https://formsubmit.co/ajax/julio@strivanallc.com', {
+        method: 'POST',
+        body: formDataObj
+      });
+
+      const data = await response.json();
+
+      if (data.success === 'true' || data.success === true || response.ok) {
+        toast.success('Thank you! We will get back to you within 24 hours.');
+        setFormData({ name: '', email: '', company: '', message: '' });
+        form.reset();
+      } else {
+        throw new Error('Form submission failed');
+      }
+    } catch (error) {
+      console.error('Form error:', error);
+      toast.error('Something went wrong. Please email us directly at info@strivanallc.com');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <section
       id="contact"
       ref={sectionRef}
-      className="py-24 bg-white relative overflow-hidden"
+      className="py-24 bg-gradient-to-br from-strivana-purple-light via-white to-strivana-blue-light"
     >
-      {/* Background decoration */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 right-0 w-96 h-96 bg-strivana-purple/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-strivana-blue/5 rounded-full blur-3xl" />
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        {/* CTA Header */}
-        <div className={`text-center mb-16 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-strivana-dark mb-4">
-            Ready to{' '}
-            <span className="text-strivana-purple">get started?</span>
-          </h2>
-          <p className="text-lg text-strivana-gray max-w-2xl mx-auto">
-            Schedule a consultation and let us discuss how we can help you achieve your goals. 
-            Our team is ready to match you with the perfect virtual assistant.
-          </p>
-        </div>
-
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
-          {/* Left Side - Contact Info & Illustration */}
-          <div className={`transition-all duration-700 delay-100 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'}`}>
+          {/* Left Column - Info */}
+          <div
+            className={`transition-all duration-700 ${
+              isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
+            }`}
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-strivana-purple/10 rounded-full text-strivana-purple text-sm font-medium mb-6">
+              <Mail size={16} />
+              <span>Get In Touch</span>
+            </div>
+
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-strivana-dark mb-6">
+              Ready to Scale Your{' '}
+              <span className="text-strivana-purple">Business?</span>
+            </h2>
+
+            <p className="text-lg text-strivana-gray mb-8 leading-relaxed">
+              Let us discuss how a dedicated virtual assistant can help you focus on what matters most. 
+              Schedule a free consultation and get matched with the perfect VA within 48 hours.
+            </p>
+
             {/* Illustration */}
             <div className="relative mb-8">
               <div className="bg-gradient-to-br from-strivana-purple-light to-strivana-purple/10 rounded-3xl p-8 relative overflow-hidden">
-                {/* Decorative elements */}
                 <div className="absolute top-4 right-4 w-20 h-20 bg-strivana-yellow/30 rounded-full animate-float" />
                 <div className="absolute bottom-4 left-4 w-16 h-16 bg-strivana-purple/20 rounded-full animate-float-slow" />
                 
-                {/* Message illustration */}
                 <div className="relative z-10 flex justify-center">
                   <div className="relative">
                     <div className="w-32 h-48 bg-strivana-dark rounded-3xl flex items-center justify-center shadow-soft-lg">
                       <MessageCircle size={48} className="text-white" />
                     </div>
-                    {/* Chat bubble */}
                     <div className="absolute -top-4 -right-8 bg-strivana-yellow text-strivana-dark px-4 py-2 rounded-xl rounded-bl-sm text-sm font-medium animate-float">
                       Let us talk!
                     </div>
                   </div>
                 </div>
 
-                {/* Decorative sparkles */}
                 <svg className="absolute top-8 left-8 w-6 h-6 text-strivana-purple animate-pulse" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z"/>
                 </svg>
@@ -155,50 +147,62 @@ const CTA = () => {
             </div>
           </div>
 
-          {/* Right Side - Contact Form */}
-          <div className={`transition-all duration-700 delay-200 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'}`}>
-            <div className="bg-white rounded-3xl p-6 lg:p-8 border border-gray-100 shadow-soft-lg">
-              <h3 className="text-xl font-display font-semibold text-strivana-dark mb-6">
-                Send us a message
+          {/* Right Column - Form */}
+          <div
+            className={`transition-all duration-700 delay-200 ${
+              isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
+            }`}
+          >
+            <div className="bg-white rounded-3xl p-8 sm:p-10 shadow-soft-lg">
+              <h3 className="text-2xl font-display font-bold text-strivana-dark mb-2">
+                Send Us a Message
               </h3>
+              <p className="text-strivana-gray text-sm mb-8">
+                Fill out the form below and we will get back to you within 24 hours.
+              </p>
 
               <form onSubmit={handleSubmit} className="space-y-5">
-                <div className="grid sm:grid-cols-2 gap-5">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-strivana-dark mb-2">
-                      Full Name
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-strivana-purple focus:ring-2 focus:ring-strivana-purple/20 outline-none transition-all text-sm"
-                      placeholder="John Doe"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-strivana-dark mb-2">
-                      Email Address
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-strivana-purple focus:ring-2 focus:ring-strivana-purple/20 outline-none transition-all text-sm"
-                      placeholder="john@company.com"
-                    />
-                  </div>
+                {/* Hidden fields for FormSubmit.co */}
+                <input type="hidden" name="_subject" value={`New Contact Form from ${formData.name || 'Website Visitor'}`} />
+                <input type="hidden" name="_cc" value="george@strivanallc.com,info@strivanallc.com" />
+                <input type="hidden" name="_template" value="table" />
+                <input type="hidden" name="_autoresponse" value="Thank you for contacting Strivana! We have received your message and will get back to you within 24 hours." />
+
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium text-strivana-dark mb-2">
+                    Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-strivana-purple focus:ring-2 focus:ring-strivana-purple/20 outline-none transition-all text-sm"
+                    placeholder="John Smith"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-strivana-dark mb-2">
+                    Email Address *
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-strivana-purple focus:ring-2 focus:ring-strivana-purple/20 outline-none transition-all text-sm"
+                    placeholder="john@company.com"
+                  />
                 </div>
 
                 <div>
                   <label htmlFor="company" className="block text-sm font-medium text-strivana-dark mb-2">
-                    Company Name (Optional)
+                    Company Name
                   </label>
                   <input
                     type="text"
@@ -213,7 +217,7 @@ const CTA = () => {
 
                 <div>
                   <label htmlFor="message" className="block text-sm font-medium text-strivana-dark mb-2">
-                    How can we help?
+                    How Can We Help? *
                   </label>
                   <textarea
                     id="message"
@@ -230,28 +234,25 @@ const CTA = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-3.5 px-6 bg-strivana-purple text-white font-medium rounded-xl hover:bg-strivana-purple-dark transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed hover:shadow-glow"
+                  className="w-full py-4 px-6 bg-strivana-purple text-white font-medium rounded-xl hover:bg-strivana-purple-dark transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed hover:shadow-glow"
                 >
                   {isSubmitting ? (
                     <>
-                      <Loader2 size={18} className="animate-spin" />
+                      <Loader2 size={20} className="animate-spin" />
                       Sending...
                     </>
                   ) : (
                     <>
-                      <Send size={18} />
+                      <Send size={20} />
                       Send Message
                     </>
                   )}
                 </button>
-              </form>
 
-              <p className="text-xs text-strivana-gray text-center mt-4">
-                By submitting, you agree to our{' '}
-                <a href="#" className="text-strivana-purple hover:underline">Privacy Policy</a>
-                {' '}and{' '}
-                <a href="#" className="text-strivana-purple hover:underline">Terms of Service</a>.
-              </p>
+                <p className="text-xs text-strivana-gray text-center">
+                  By submitting, you agree to our privacy policy. We will never share your information.
+                </p>
+              </form>
             </div>
           </div>
         </div>
