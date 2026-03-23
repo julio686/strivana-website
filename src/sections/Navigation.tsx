@@ -52,7 +52,8 @@ const Navigation = () => {
             <img 
               src="/logo.jpg" 
               alt="Strivana" 
-              className="h-14 sm:h-16 w-auto transition-transform duration-300 group-hover:scale-105"
+              className="h-16 sm:h-20 w-auto transition-transform duration-300 group-hover:scale-105"
+              style={{ maxHeight: '80px' }}
               onError={(e) => {
                 // Fallback to text if image fails to load
                 e.currentTarget.style.display = 'none';
