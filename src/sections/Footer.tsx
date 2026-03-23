@@ -53,9 +53,9 @@ const Footer = () => {
           <div className="lg:col-span-2">
             <a href="#" className="inline-block mb-6 group">
               <img 
-                src="https://julio686.github.io/strivana-website/logo.jpg?v=2" 
+                src="/logo.jpg" 
                 alt="Strivana" 
-                className="h-12 w-auto brightness-0 invert transition-transform duration-300 group-hover:scale-105"
+                className="h-14 w-auto brightness-0 invert transition-transform duration-300 group-hover:scale-105"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';
                 }}
@@ -70,7 +70,7 @@ const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-center gap-3 text-gray-400 text-sm">
                 <Mail size={16} className="text-strivana-purple" />
-                <span>hello@strivana.com</span>
+                <span>info@strivanallc.com</span>
               </div>
               <div className="flex items-center gap-3 text-gray-400 text-sm">
                 <Phone size={16} className="text-strivana-purple" />
