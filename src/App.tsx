@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import './App.css';
 import Navigation from './sections/Navigation';
 import Hero from './sections/Hero';
@@ -11,11 +10,10 @@ import CTA from './sections/CTA';
 import Footer from './sections/Footer';
 import ChatBot from './components/ChatBot';
 import AdminLayout from './admin/AdminLayout';
-import Careers from './pages/Careers';
 
-// Main website content
-const MainWebsite = () => {
+function App() {
   const [showChat, setShowChat] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     // Intersection Observer for scroll animations
@@ -39,6 +37,25 @@ const MainWebsite = () => {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    // Check if we're on the admin route
+    const checkAdminRoute = () => {
+      const hash = window.location.hash;
+      setIsAdmin(hash === '#admin' || hash.startsWith('#admin/'));
+    };
+
+    checkAdminRoute();
+    window.addEventListener('hashchange', checkAdminRoute);
+
+    return () => window.removeEventListener('hashchange', checkAdminRoute);
+  }, []);
+
+  // Render Admin Layout
+  if (isAdmin) {
+    return <AdminLayout />;
+  }
+
+  // Render Main Website
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
@@ -79,56 +96,6 @@ const MainWebsite = () => {
       </a>
     </div>
   );
-};
-
-// Scroll to top on route change
-const ScrollToTop = () => {
-  const { pathname } = useLocation();
-  
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
-  
-  return null;
-};
-
-// Router wrapper
-const AppRouter = () => {
-  return (
-    <BrowserRouter>
-      <ScrollToTop />
-      <Routes>
-        <Route path="/" element={<MainWebsite />} />
-        <Route path="/careers" element={<Careers />} />
-        <Route path="*" element={<MainWebsite />} />
-      </Routes>
-    </BrowserRouter>
-  );
-};
-
-function App() {
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  useEffect(() => {
-    // Check if we're on the admin route
-    const checkAdminRoute = () => {
-      const hash = window.location.hash;
-      setIsAdmin(hash === '#admin' || hash.startsWith('#admin/'));
-    };
-
-    checkAdminRoute();
-    window.addEventListener('hashchange', checkAdminRoute);
-
-    return () => window.removeEventListener('hashchange', checkAdminRoute);
-  }, []);
-
-  // Render Admin Layout
-  if (isAdmin) {
-    return <AdminLayout />;
-  }
-
-  // Render Main Website with Router
-  return <AppRouter />;
 }
 
 export default App;
