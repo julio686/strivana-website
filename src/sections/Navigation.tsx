@@ -19,7 +19,7 @@ const Navigation = () => {
     { name: 'Pricing', href: '#pricing' },
     { name: 'FAQ', href: '#faq' },
     { name: 'Testimonials', href: '#testimonials' },
-    { name: 'Careers', href: '/careers', isPage: true },
+    { name: 'Careers', href: '#careers' },
     { name: 'Contact', href: '#contact' },
   ];
 
@@ -41,7 +41,7 @@ const Navigation = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <nav className="flex items-center justify-between">
-          {/* Logo - Same height as "See Pricing" button (~44-48px) */}
+          {/* Logo */}
           <a 
             href="#" 
             className="flex items-center group"
@@ -55,7 +55,6 @@ const Navigation = () => {
               alt="Strivana" 
               className="h-20 sm:h-24 md:h-28 w-auto transition-transform duration-300 group-hover:scale-105 object-contain"
               onError={(e) => {
-                // Fallback to text if image fails to load
                 e.currentTarget.style.display = 'none';
                 const fallback = document.createElement('span');
                 fallback.className = 'text-2xl font-bold text-strivana-purple';
@@ -68,25 +67,14 @@ const Navigation = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
-              link.isPage ? (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  className="text-sm font-medium text-strivana-gray hover:text-strivana-purple transition-colors duration-200 relative group"
-                >
-                  {link.name}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-strivana-purple transition-all duration-300 group-hover:w-full" />
-                </a>
-              ) : (
-                <button
-                  key={link.name}
-                  onClick={() => scrollToSection(link.href)}
-                  className="text-sm font-medium text-strivana-gray hover:text-strivana-purple transition-colors duration-200 relative group"
-                >
-                  {link.name}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-strivana-purple transition-all duration-300 group-hover:w-full" />
-                </button>
-              )
+              <button
+                key={link.name}
+                onClick={() => scrollToSection(link.href)}
+                className="text-sm font-medium text-strivana-gray hover:text-strivana-purple transition-colors duration-200 relative group"
+              >
+                {link.name}
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-strivana-purple transition-all duration-300 group-hover:w-full" />
+              </button>
             ))}
           </div>
 
@@ -121,24 +109,13 @@ const Navigation = () => {
           <div className="md:hidden mt-4 pb-4 border-t border-gray-100 animate-slide-up">
             <div className="flex flex-col gap-2 pt-4">
               {navLinks.map((link) => (
-                link.isPage ? (
-                  <a
-                    key={link.name}
-                    href={link.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-left px-4 py-3 text-strivana-gray hover:text-strivana-purple hover:bg-strivana-purple-light rounded-lg transition-colors"
-                  >
-                    {link.name}
-                  </a>
-                ) : (
-                  <button
-                    key={link.name}
-                    onClick={() => scrollToSection(link.href)}
-                    className="text-left px-4 py-3 text-strivana-gray hover:text-strivana-purple hover:bg-strivana-purple-light rounded-lg transition-colors"
-                  >
-                    {link.name}
-                  </button>
-                )
+                <button
+                  key={link.name}
+                  onClick={() => scrollToSection(link.href)}
+                  className="text-left px-4 py-3 text-strivana-gray hover:text-strivana-purple hover:bg-strivana-purple-light rounded-lg transition-colors"
+                >
+                  {link.name}
+                </button>
               ))}
               <button
                 onClick={() => scrollToSection('#contact')}
