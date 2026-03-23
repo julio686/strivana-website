@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState } from 'react';
 import { Mail, MapPin, Send, Loader2, MessageCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import emailjs from '@emailjs/browser';
 
 const CTA = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -35,35 +36,32 @@ const CTA = () => {
     setIsSubmitting(true);
 
     try {
-      // Use Formspree with proper form data format
-      const formDataObj = new FormData();
-      formDataObj.append('name', formData.name);
-      formDataObj.append('email', formData.email);
-      formDataObj.append('company', formData.company || 'Not provided');
-      formDataObj.append('message', formData.message);
-      formDataObj.append('_subject', `New Contact Form from ${formData.name}`);
-      formDataObj.append('_replyto', formData.email);
+      // EmailJS configuration
+      // Service ID: service_strivana
+      // Template ID: template_contact
+      // Public Key: 6J8v2Kx9LqRt3YzP
+      
+      const templateParams = {
+        from_name: formData.name,
+        from_email: formData.email,
+        company: formData.company || 'Not provided',
+        message: formData.message,
+        to_email: 'info@strivanallc.com',
+      };
 
-      const response = await fetch('https://formspree.io/f/xrbewwab', {
-        method: 'POST',
-        body: formDataObj,
-        headers: {
-          'Accept': 'application/json'
-        }
-      });
+      await emailjs.send(
+        'service_strivana',
+        'template_contact',
+        templateParams,
+        '6J8v2Kx9LqRt3YzP'
+      );
 
-      if (response.ok) {
-        toast.success('Thank you! We will get back to you within 24 hours.');
-        setFormData({ name: '', email: '', company: '', message: '' });
-      } else {
-        // Fallback: open email client
-        const mailtoLink = `mailto:info@strivanallc.com,julio@strivanallc.com,george@strivanallc.com?subject=Contact Form Submission from ${encodeURIComponent(formData.name)}&body=${encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\nCompany: ${formData.company || 'N/A'}\n\nMessage:\n${formData.message}`)}`;
-        window.open(mailtoLink, '_blank');
-        toast.success('Opening your email client... Please send the email to complete your inquiry.');
-        setFormData({ name: '', email: '', company: '', message: '' });
-      }
+      toast.success('Thank you! We will get back to you within 24 hours.');
+      setFormData({ name: '', email: '', company: '', message: '' });
     } catch (error) {
-      // Fallback: open email client
+      console.error('EmailJS error:', error);
+      
+      // Fallback: open email client with all recipients
       const mailtoLink = `mailto:info@strivanallc.com,julio@strivanallc.com,george@strivanallc.com?subject=Contact Form Submission from ${encodeURIComponent(formData.name)}&body=${encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\nCompany: ${formData.company || 'N/A'}\n\nMessage:\n${formData.message}`)}`;
       window.open(mailtoLink, '_blank');
       toast.success('Opening your email client... Please send the email to complete your inquiry.');
