@@ -53,8 +53,15 @@ const Footer = () => {
               <img 
                 src="/logo.jpg" 
                 alt="Strivana" 
-                className="h-16 w-auto brightness-0 invert transition-transform duration-300 group-hover:scale-105"
-                style={{ maxHeight: '70px', filter: 'brightness(0) invert(1)' }}
+                className="h-20 sm:h-24 w-auto transition-transform duration-300 group-hover:scale-105 object-contain rounded-lg"
+                style={{ backgroundColor: 'white', padding: '4px' }}
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  const fallback = document.createElement('span');
+                  fallback.className = 'text-3xl font-bold text-white';
+                  fallback.textContent = 'Strivana';
+                  e.currentTarget.parentElement?.appendChild(fallback);
+                }}
               />
             </a>
             <p className="text-gray-400 text-sm leading-relaxed mb-6 max-w-sm">
