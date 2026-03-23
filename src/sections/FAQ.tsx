@@ -8,28 +8,48 @@ interface FAQItem {
 
 const faqItems: FAQItem[] = [
   {
-    question: 'How do I get started with your services?',
-    answer: 'Getting started is easy! Simply schedule a free consultation through our website. During the call, we will discuss your needs, match you with the perfect VA, and set up your account. You can start working with your VA within 24-48 hours.',
+    question: 'What countries do you hire from?',
+    answer: 'We focus on Latin America for our Virtual Assistants. Our Latin American VAs are especially popular with US businesses, thanks to their exceptional English fluency with minimal accents, strong cultural alignment with US business practices, and convenient time zone overlap with North America.',
   },
   {
-    question: 'How do you ensure the confidentiality of my information?',
-    answer: 'We take data security seriously. All our VAs sign comprehensive NDAs, and we use enterprise-grade encryption for all communications. We also offer secure file sharing and can work within your existing security protocols. Our systems are GDPR and HIPAA compliant where applicable.',
+    question: 'How do taxes & payroll work when hiring Virtual Assistants?',
+    answer: 'We handle all payroll and compliance requirements for your Virtual Assistant. This means you can focus on growing your business while we handle tax compliance, payroll processing, legal requirements, and international payment regulations. It is a simple, worry-free solution that ensures everything is managed properly and legally.',
   },
   {
-    question: 'What are your working hours and availability?',
-    answer: 'Our VAs work in US and Canada time zones, providing same-day turnaround for most tasks. Starter and Professional plans include business hours support (9 AM - 6 PM), while our Executive plan offers extended or 24/7 availability options to meet your specific needs.',
+    question: 'How do you get paid?',
+    answer: 'It is simple – we charge a one-time flat fee, but only after you have found your perfect match. Whatever hourly pay you decide to pay goes directly to the Virtual Assistant you hire.',
   },
   {
-    question: 'How do you handle communication and task management?',
-    answer: 'We adapt to your preferred communication style - whether that is email, Slack, Microsoft Teams, or phone. For task management, we can use your existing tools (Asana, Trello, Monday.com) or provide access to our project management system. You will have a dedicated account manager for any escalations.',
+    question: 'What is the difference between Staffing and Recruiting Agencies?',
+    answer: 'Staffing agencies charge monthly fees but only pay a small portion to Virtual Assistants. This often results in lower quality talent, as skilled VAs avoid arrangements where agencies keep a large chunk of their earnings. At Strivana, we charge just one flat fee after you hire. Your Virtual Assistant receives 100% of what you pay them directly. This attracts higher-quality talent and eliminates ongoing middleman costs, saving you money while getting better results.',
   },
   {
-    question: 'What if I need to cancel or change my plan?',
-    answer: 'We offer flexible month-to-month contracts with no long-term commitments. You can upgrade, downgrade, or cancel your plan at any time with 7 days notice. We also provide a 7-day satisfaction guarantee for new clients - if you are not satisfied, we will refund your first week.',
+    question: 'What if I have questions and need help after hiring?',
+    answer: 'After hiring your Virtual Assistant, you will have access to a dedicated Customer Success Manager who will help ensure your success. They are here to assist with reviewing performance, monitoring progress, training guidance, and any other questions or requests.',
   },
   {
-    question: 'How are your VAs vetted and trained?',
-    answer: 'All our VAs go through a rigorous selection process including background checks, skills assessments, and multiple interviews. They are university-educated professionals with at least 3 years of experience. We provide ongoing training and certification programs to ensure they stay current with industry best practices.',
+    question: 'How much does the average Virtual Assistant cost?',
+    answer: 'Virtual Assistant hourly rates depend on the skills and experience they have. Entry Level: $6-$7 per hour. Highly Experienced: $8-$10 per hour. The hourly rate you agree to pay goes directly to your Virtual Assistant – we do not take any fees from their pay.',
+  },
+  {
+    question: 'Do they work for me or for Strivana?',
+    answer: 'The Virtual Assistant works directly for you while we make it simple and compliant. Your Virtual Assistant is your direct team member. We handle all payroll and legal paperwork. You save thousands annually with no ongoing agency fees. Everything stays fully compliant without the administrative hassle. It is the best of both worlds – direct hires with none of the complex paperwork or compliance concerns.',
+  },
+  {
+    question: 'What if they do not turn out to be a good fit?',
+    answer: 'While it is rare to have issues since candidates are thoroughly vetted by both our team and you, we understand the importance of finding the right fit. That is why we offer a 6-month replacement guarantee at no extra cost. We also offer unlimited candidate interviews to ensure you find the best match. This double-screening process helps ensure quality matches prior to hiring an applicant, and our guarantee gives you extra peace of mind that you will find the right Virtual Assistant for your business.',
+  },
+  {
+    question: 'How is their English and Communication skills?',
+    answer: 'We maintain extremely high standards for English fluency. All candidates must submit an English voice recording. We review hundreds of applications daily, and we only select those with fluent English and minimal accents. Only the best communicators make it through our screening. This strict vetting process for language skills means you will work with a Virtual Assistant who communicates clearly and professionally from day one.',
+  },
+  {
+    question: 'What time zone will they be working in?',
+    answer: 'Your Virtual Assistant will work according to your schedule and time zone. They are accustomed to US hours, and you get to set the working hours that best fit your needs.',
+  },
+  {
+    question: 'Can I start with Part Time?',
+    answer: 'Yes, you can start with either part-time or full-time. The minimum is 20 hours per week, as our most qualified Virtual Assistants prefer stable positions with consistent hours.',
   },
 ];
 
