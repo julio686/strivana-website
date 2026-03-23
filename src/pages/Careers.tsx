@@ -168,15 +168,32 @@ const Careers = () => {
         formDataObj.append('attachment', resumeFile);
       }
 
-      const response = await fetch('https://formspree.io/f/xnqelqwl', {
+      // Using FormSubmit.co - free, no signup required
+      const formSubmitData = new FormData();
+      formSubmitData.append('_subject', `Talent Application: ${formData.position} - ${formData.fullName}`);
+      formSubmitData.append('fullName', formData.fullName);
+      formSubmitData.append('email', formData.email);
+      formSubmitData.append('phone', formData.phone);
+      formSubmitData.append('position', formData.position);
+      formSubmitData.append('experience', formData.experience);
+      formSubmitData.append('linkedin', formData.linkedin || 'Not provided');
+      formSubmitData.append('portfolio', formData.portfolio || 'Not provided');
+      formSubmitData.append('message', formData.message);
+      formSubmitData.append('_replyto', formData.email);
+      formSubmitData.append('_cc', 'george@strivanallc.com,info@strivanallc.com');
+
+      if (resumeFile) {
+        formSubmitData.append('attachment', resumeFile);
+      }
+
+      const response = await fetch('https://formsubmit.co/ajax/julio@strivanallc.com', {
         method: 'POST',
-        body: formDataObj,
-        headers: {
-          'Accept': 'application/json'
-        }
+        body: formSubmitData
       });
 
-      if (response.ok) {
+      const data = await response.json();
+
+      if (data.success === 'true' || data.success === true) {
         toast.success('Application submitted successfully! We will review your application and get back to you within 3-5 business days.');
         setFormData({
           fullName: '',
@@ -194,11 +211,7 @@ const Careers = () => {
       }
     } catch (error) {
       console.error('Form error:', error);
-      
-      // Fallback: open email client
-      const mailtoLink = `mailto:talent@strivanallc.com,julio@strivanallc.com,george@strivanallc.com?subject=Talent Application: ${encodeURIComponent(formData.position)} - ${encodeURIComponent(formData.fullName)}&body=${encodeURIComponent(`Full Name: ${formData.fullName}\nEmail: ${formData.email}\nPhone: ${formData.phone}\nPosition: ${formData.position}\nExperience: ${formData.experience}\nLinkedIn: ${formData.linkedin}\nPortfolio: ${formData.portfolio}\n\nMessage:\n${formData.message}`)}`;
-      window.open(mailtoLink, '_blank');
-      toast.success('Opening your email client... Please attach your resume and send the email to complete your application.');
+      toast.error('Something went wrong. Please try again or email us directly at info@strivanallc.com');
     } finally {
       setIsSubmitting(false);
     }
