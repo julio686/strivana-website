@@ -1,7 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import { Mail, MapPin, Send, Loader2, MessageCircle } from 'lucide-react';
 import { toast } from 'sonner';
-import emailjs from '@emailjs/browser';
 
 const CTA = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -36,30 +35,31 @@ const CTA = () => {
     setIsSubmitting(true);
 
     try {
-      // EmailJS configuration
-      // Service ID: service_strivana
-      // Template ID: template_contact
-      // Public Key: 6J8v2Kx9LqRt3YzP
-      
-      const templateParams = {
-        from_name: formData.name,
-        from_email: formData.email,
-        company: formData.company || 'Not provided',
-        message: formData.message,
-        to_email: 'info@strivanallc.com',
-      };
+      // Using Formspree with multiple recipients configured in the dashboard
+      const response = await fetch('https://formspree.io/f/mnqelqwl', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          company: formData.company || 'Not provided',
+          message: formData.message,
+          _subject: `New Contact Form from ${formData.name}`,
+          _replyto: formData.email
+        })
+      });
 
-      await emailjs.send(
-        'service_strivana',
-        'template_contact',
-        templateParams,
-        '6J8v2Kx9LqRt3YzP'
-      );
-
-      toast.success('Thank you! We will get back to you within 24 hours.');
-      setFormData({ name: '', email: '', company: '', message: '' });
+      if (response.ok) {
+        toast.success('Thank you! We will get back to you within 24 hours.');
+        setFormData({ name: '', email: '', company: '', message: '' });
+      } else {
+        throw new Error('Form submission failed');
+      }
     } catch (error) {
-      console.error('EmailJS error:', error);
+      console.error('Form error:', error);
       
       // Fallback: open email client with all recipients
       const mailtoLink = `mailto:info@strivanallc.com,julio@strivanallc.com,george@strivanallc.com?subject=Contact Form Submission from ${encodeURIComponent(formData.name)}&body=${encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\nCompany: ${formData.company || 'N/A'}\n\nMessage:\n${formData.message}`)}`;
