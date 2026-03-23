@@ -37,7 +37,7 @@ const ChatBot = ({ onClose }: ChatBotProps) => {
     {
       id: 'welcome',
       role: 'assistant',
-      content: 'Hello! I am Strivana AI Assistant. How can I help you today? Feel free to ask about our services, pricing, or how to get started!',
+      content: 'Hello! I am Ghost, your AI Marketing Director at Strivana. I have 20+ years of experience in brand building and lead generation. How can I help you today? Ask me about our virtual assistant services, pricing, or how we can help grow your business!',
       timestamp: new Date(),
     },
   ]);
@@ -144,10 +144,10 @@ const ChatBot = ({ onClose }: ChatBotProps) => {
             <Bot size={20} className="text-white" />
           </div>
           <div>
-            <h4 className="font-display font-semibold text-white">Strivana AI</h4>
+            <h4 className="font-display font-semibold text-white">Ghost AI</h4>
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-              <span className="text-xs text-white/80">Online</span>
+              <span className="text-xs text-white/80">Your Marketing Director</span>
             </div>
           </div>
         </div>
