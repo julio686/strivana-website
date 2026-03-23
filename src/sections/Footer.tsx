@@ -1,4 +1,4 @@
-import { Instagram, Facebook, Twitter, Youtube, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
+import { Instagram, Facebook, Twitter, Youtube, Linkedin, Mail, MapPin } from 'lucide-react';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -16,14 +16,12 @@ const Footer = () => {
       { name: 'Our Team', href: '#' },
       { name: 'Careers', href: '#' },
       { name: 'Blog', href: '#' },
-      { name: 'Press', href: '#' },
     ],
     support: [
-      { name: 'Help Center', href: '#faq' },
+      { name: 'FAQs', href: '#faq' },
       { name: 'Contact Us', href: '#contact' },
       { name: 'Privacy Policy', href: '#' },
       { name: 'Terms of Service', href: '#' },
-      { name: 'Security', href: '#' },
     ],
   };
 
@@ -55,10 +53,8 @@ const Footer = () => {
               <img 
                 src="/logo.jpg" 
                 alt="Strivana" 
-                className="h-14 w-auto brightness-0 invert transition-transform duration-300 group-hover:scale-105"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                }}
+                className="h-16 w-auto brightness-0 invert transition-transform duration-300 group-hover:scale-105"
+                style={{ maxHeight: '70px', filter: 'brightness(0) invert(1)' }}
               />
             </a>
             <p className="text-gray-400 text-sm leading-relaxed mb-6 max-w-sm">
@@ -71,10 +67,6 @@ const Footer = () => {
               <div className="flex items-center gap-3 text-gray-400 text-sm">
                 <Mail size={16} className="text-strivana-purple" />
                 <span>info@strivanallc.com</span>
-              </div>
-              <div className="flex items-center gap-3 text-gray-400 text-sm">
-                <Phone size={16} className="text-strivana-purple" />
-                <span>+1 (555) 123-4567</span>
               </div>
               <div className="flex items-center gap-3 text-gray-400 text-sm">
                 <MapPin size={16} className="text-strivana-purple" />
