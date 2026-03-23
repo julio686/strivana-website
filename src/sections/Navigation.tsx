@@ -50,9 +50,9 @@ const Navigation = () => {
             }}
           >
             <img 
-              src="https://julio686.github.io/strivana-website/logo.jpg?v=2" 
+              src="/logo.jpg" 
               alt="Strivana" 
-              className="h-11 sm:h-12 w-auto transition-transform duration-300 group-hover:scale-105"
+              className="h-14 sm:h-16 w-auto transition-transform duration-300 group-hover:scale-105"
               onError={(e) => {
                 // Fallback to text if image fails to load
                 e.currentTarget.style.display = 'none';
