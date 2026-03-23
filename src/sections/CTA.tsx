@@ -34,12 +34,34 @@ const CTA = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      const response = await fetch('https://formspree.io/f/xrbewwab', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          company: formData.company,
+          message: formData.message,
+          _subject: `New Contact Form Submission from ${formData.name}`,
+          _replyto: formData.email
+        })
+      });
 
-    toast.success('Thank you! We will get back to you within 24 hours.');
-    setFormData({ name: '', email: '', company: '', message: '' });
-    setIsSubmitting(false);
+      if (response.ok) {
+        toast.success('Thank you! We will get back to you within 24 hours.');
+        setFormData({ name: '', email: '', company: '', message: '' });
+      } else {
+        toast.error('Something went wrong. Please try again or email us directly at info@strivanallc.com');
+      }
+    } catch (error) {
+      toast.error('Something went wrong. Please try again or email us directly at info@strivanallc.com');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -123,7 +145,7 @@ const CTA = () => {
                 </div>
                 <div>
                   <h4 className="font-display font-semibold text-strivana-dark mb-1">Email</h4>
-                  <p className="text-strivana-gray text-sm">hello@strivana.com</p>
+                  <p className="text-strivana-gray text-sm">info@strivanallc.com</p>
                   <p className="text-strivana-gray text-xs">We reply within 24 hours</p>
                 </div>
               </div>
