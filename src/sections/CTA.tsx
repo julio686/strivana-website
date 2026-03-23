@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
-import { Phone, Mail, MapPin, Send, Loader2 } from 'lucide-react';
+import { Mail, MapPin, Send, Loader2, MessageCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 const CTA = () => {
@@ -35,6 +35,7 @@ const CTA = () => {
     setIsSubmitting(true);
 
     try {
+      // Send to Formspree with multiple recipients via _cc
       const response = await fetch('https://formspree.io/f/xrbewwab', {
         method: 'POST',
         headers: {
@@ -47,7 +48,8 @@ const CTA = () => {
           company: formData.company,
           message: formData.message,
           _subject: `New Contact Form Submission from ${formData.name}`,
-          _replyto: formData.email
+          _replyto: formData.email,
+          _cc: 'george@strivanallc.com,info@strivanallc.com'
         })
       });
 
@@ -106,11 +108,11 @@ const CTA = () => {
                 <div className="absolute top-4 right-4 w-20 h-20 bg-strivana-yellow/30 rounded-full animate-float" />
                 <div className="absolute bottom-4 left-4 w-16 h-16 bg-strivana-purple/20 rounded-full animate-float-slow" />
                 
-                {/* Phone illustration */}
+                {/* Message illustration */}
                 <div className="relative z-10 flex justify-center">
                   <div className="relative">
                     <div className="w-32 h-48 bg-strivana-dark rounded-3xl flex items-center justify-center shadow-soft-lg">
-                      <Phone size={48} className="text-white" />
+                      <MessageCircle size={48} className="text-white" />
                     </div>
                     {/* Chat bubble */}
                     <div className="absolute -top-4 -right-8 bg-strivana-yellow text-strivana-dark px-4 py-2 rounded-xl rounded-bl-sm text-sm font-medium animate-float">
@@ -128,17 +130,6 @@ const CTA = () => {
 
             {/* Contact Info */}
             <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-strivana-purple-light rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Phone size={20} className="text-strivana-purple" />
-                </div>
-                <div>
-                  <h4 className="font-display font-semibold text-strivana-dark mb-1">Phone</h4>
-                  <p className="text-strivana-gray text-sm">+1 (555) 123-4567</p>
-                  <p className="text-strivana-gray text-xs">Mon-Fri, 9AM-6PM EST</p>
-                </div>
-              </div>
-
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-strivana-purple-light rounded-xl flex items-center justify-center flex-shrink-0">
                   <Mail size={20} className="text-strivana-purple" />
