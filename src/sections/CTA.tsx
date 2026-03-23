@@ -35,24 +35,25 @@ const CTA = () => {
     setIsSubmitting(true);
 
     try {
-      // Using Formspree with multiple recipients configured in the dashboard
-      const response = await fetch('https://formspree.io/f/mnqelqwl', {
+      // Using FormSubmit.co - free, no signup required
+      // Sends to: julio@strivanallc.com, george@strivanallc.com, info@strivanallc.com
+      const formDataObj = new FormData();
+      formDataObj.append('_subject', `New Contact Form from ${formData.name}`);
+      formDataObj.append('name', formData.name);
+      formDataObj.append('email', formData.email);
+      formDataObj.append('company', formData.company || 'Not provided');
+      formDataObj.append('message', formData.message);
+      formDataObj.append('_replyto', formData.email);
+      formDataObj.append('_cc', 'george@strivanallc.com,info@strivanallc.com');
+
+      const response = await fetch('https://formsubmit.co/ajax/julio@strivanallc.com', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          company: formData.company || 'Not provided',
-          message: formData.message,
-          _subject: `New Contact Form from ${formData.name}`,
-          _replyto: formData.email
-        })
+        body: formDataObj
       });
 
-      if (response.ok) {
+      const data = await response.json();
+
+      if (data.success === 'true' || data.success === true) {
         toast.success('Thank you! We will get back to you within 24 hours.');
         setFormData({ name: '', email: '', company: '', message: '' });
       } else {
@@ -60,12 +61,7 @@ const CTA = () => {
       }
     } catch (error) {
       console.error('Form error:', error);
-      
-      // Fallback: open email client with all recipients
-      const mailtoLink = `mailto:info@strivanallc.com,julio@strivanallc.com,george@strivanallc.com?subject=Contact Form Submission from ${encodeURIComponent(formData.name)}&body=${encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\nCompany: ${formData.company || 'N/A'}\n\nMessage:\n${formData.message}`)}`;
-      window.open(mailtoLink, '_blank');
-      toast.success('Opening your email client... Please send the email to complete your inquiry.');
-      setFormData({ name: '', email: '', company: '', message: '' });
+      toast.error('Something went wrong. Please try again or email us directly at info@strivanallc.com');
     } finally {
       setIsSubmitting(false);
     }
