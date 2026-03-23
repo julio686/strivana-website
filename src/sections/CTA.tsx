@@ -35,32 +35,39 @@ const CTA = () => {
     setIsSubmitting(true);
 
     try {
-      // Send to Formspree with multiple recipients via _cc
+      // Use Formspree with proper form data format
+      const formDataObj = new FormData();
+      formDataObj.append('name', formData.name);
+      formDataObj.append('email', formData.email);
+      formDataObj.append('company', formData.company || 'Not provided');
+      formDataObj.append('message', formData.message);
+      formDataObj.append('_subject', `New Contact Form from ${formData.name}`);
+      formDataObj.append('_replyto', formData.email);
+
       const response = await fetch('https://formspree.io/f/xrbewwab', {
         method: 'POST',
+        body: formDataObj,
         headers: {
-          'Content-Type': 'application/json',
           'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          company: formData.company,
-          message: formData.message,
-          _subject: `New Contact Form Submission from ${formData.name}`,
-          _replyto: formData.email,
-          _cc: 'george@strivanallc.com,info@strivanallc.com'
-        })
+        }
       });
 
       if (response.ok) {
         toast.success('Thank you! We will get back to you within 24 hours.');
         setFormData({ name: '', email: '', company: '', message: '' });
       } else {
-        toast.error('Something went wrong. Please try again or email us directly at info@strivanallc.com');
+        // Fallback: open email client
+        const mailtoLink = `mailto:info@strivanallc.com,julio@strivanallc.com,george@strivanallc.com?subject=Contact Form Submission from ${encodeURIComponent(formData.name)}&body=${encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\nCompany: ${formData.company || 'N/A'}\n\nMessage:\n${formData.message}`)}`;
+        window.open(mailtoLink, '_blank');
+        toast.success('Opening your email client... Please send the email to complete your inquiry.');
+        setFormData({ name: '', email: '', company: '', message: '' });
       }
     } catch (error) {
-      toast.error('Something went wrong. Please try again or email us directly at info@strivanallc.com');
+      // Fallback: open email client
+      const mailtoLink = `mailto:info@strivanallc.com,julio@strivanallc.com,george@strivanallc.com?subject=Contact Form Submission from ${encodeURIComponent(formData.name)}&body=${encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\nCompany: ${formData.company || 'N/A'}\n\nMessage:\n${formData.message}`)}`;
+      window.open(mailtoLink, '_blank');
+      toast.success('Opening your email client... Please send the email to complete your inquiry.');
+      setFormData({ name: '', email: '', company: '', message: '' });
     } finally {
       setIsSubmitting(false);
     }
