@@ -33,7 +33,7 @@ git push -u origin main
 
 | Secret Name | Value |
 |-------------|-------|
-| `CLOUDFLARE_API_TOKEN` | `765816c65ba620fce9d4df6028129560` |
+| `CLOUDFLARE_API_TOKEN` | `cfut_5eoK1JYJvX90LQsNhSxDCOv6PzO8FEI09UYG9RjH3c8024a4` |
 | `CLOUDFLARE_ACCOUNT_ID` | Your Cloudflare Account ID |
 
 ### Step 3: Create Cloudflare Pages Project (if not exists)
@@ -51,7 +51,7 @@ If you haven't created the Pages project yet:
 
 ```bash
 curl -X POST "https://api.cloudflare.com/client/v4/accounts/YOUR_ACCOUNT_ID/pages/projects" \
-  -H "Authorization: Bearer 765816c65ba620fce9d4df6028129560" \
+  -H "Authorization: Bearer cfut_5eoK1JYJvX90LQsNhSxDCOv6PzO8FEI09UYG9RjH3c8024a4" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "strivana-website",
@@ -95,7 +95,7 @@ npm install -g wrangler
 wrangler login
 
 # Or use the API token directly
-export CLOUDFLARE_API_TOKEN=765816c65ba620fce9d4df6028129560
+export CLOUDFLARE_API_TOKEN=cfut_5eoK1JYJvX90LQsNhSxDCOv6PzO8FEI09UYG9RjH3c8024a4
 
 # Build the project
 npm run build
@@ -123,7 +123,7 @@ cd dist && zip -r ../deploy.zip . && cd ..
 
 # Upload via API
 curl -X POST "https://api.cloudflare.com/client/v4/accounts/YOUR_ACCOUNT_ID/pages/projects/strivana-website/deployments" \
-  -H "Authorization: Bearer 765816c65ba620fce9d4df6028129560" \
+  -H "Authorization: Bearer cfut_5eoK1JYJvX90LQsNhSxDCOv6PzO8FEI09UYG9RjH3c8024a4" \
   -F "file=@deploy.zip"
 ```
 
@@ -197,19 +197,19 @@ Common fixes:
 ### Get All Deployments
 ```bash
 curl "https://api.cloudflare.com/client/v4/accounts/YOUR_ACCOUNT_ID/pages/projects/strivana-website/deployments" \
-  --header "Authorization: Bearer 765816c65ba620fce9d4df6028129560"
+  --header "Authorization: Bearer cfut_5eoK1JYJvX90LQsNhSxDCOv6PzO8FEI09UYG9RjH3c8024a4"
 ```
 
 ### Get Project Details
 ```bash
 curl "https://api.cloudflare.com/client/v4/accounts/YOUR_ACCOUNT_ID/pages/projects/strivana-website" \
-  --header "Authorization: Bearer 765816c65ba620fce9d4df6028129560"
+  --header "Authorization: Bearer cfut_5eoK1JYJvX90LQsNhSxDCOv6PzO8FEI09UYG9RjH3c8024a4"
 ```
 
 ### Delete a Deployment
 ```bash
 curl -X DELETE "https://api.cloudflare.com/client/v4/accounts/YOUR_ACCOUNT_ID/pages/projects/strivana-website/deployments/DEPLOYMENT_ID" \
-  --header "Authorization: Bearer 765816c65ba620fce9d4df6028129560"
+  --header "Authorization: Bearer cfut_5eoK1JYJvX90LQsNhSxDCOv6PzO8FEI09UYG9RjH3c8024a4"
 ```
 
 ---
