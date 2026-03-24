@@ -1,85 +1,131 @@
-# Strivana Website - Deployment Guide
+# Strivana Website - Cloudflare Pages Deployment Guide
 
-## Quick Start Commands
+## Overview
 
-Run these commands in your terminal:
-
-```bash
-cd C:\Users\julio\strivana-website
-
-# Push to GitHub (you'll be prompted to sign in)
-git push -u origin main
-```
-
-When prompted, enter your GitHub credentials or use a personal access token.
+This project is deployed to **Cloudflare Pages** with the custom domain `strivanallc.com`.
 
 ---
 
-## Step-by-Step Deployment Instructions
+## Quick Start Commands
 
-### Step 1: Push Code to GitHub
+```bash
+cd C:\Users\julio\strivana-website
 
-The repository is already initialized. You just need to push it:
+# Push to GitHub
+git push -u origin main
+```
+
+---
+
+## Cloudflare Pages Setup
+
+### Step 1: Get Your Cloudflare Account ID
+
+1. Log in to [Cloudflare Dashboard](https://dash.cloudflare.com)
+2. Select your domain `strivanallc.com`
+3. On the right sidebar, find **Account ID** - copy this value
+
+### Step 2: Configure GitHub Secrets
+
+1. Go to your GitHub repository: `https://github.com/julio686/strivana-website`
+2. Click **Settings** → **Secrets and variables** → **Actions**
+3. Add these secrets:
+
+| Secret Name | Value |
+|-------------|-------|
+| `CLOUDFLARE_API_TOKEN` | `765816c65ba620fce9d4df6028129560` |
+| `CLOUDFLARE_ACCOUNT_ID` | Your Cloudflare Account ID |
+
+### Step 3: Create Cloudflare Pages Project (if not exists)
+
+If you haven't created the Pages project yet:
+
+**Option A: Via Cloudflare Dashboard**
+1. Go to [Cloudflare Dashboard](https://dash.cloudflare.com) → **Pages**
+2. Click **Create a project**
+3. Select **Direct Upload**
+4. Project name: `strivana-website`
+5. Click **Create project**
+
+**Option B: Via API (using curl)**
+
+```bash
+curl -X POST "https://api.cloudflare.com/client/v4/accounts/YOUR_ACCOUNT_ID/pages/projects" \
+  -H "Authorization: Bearer 765816c65ba620fce9d4df6028129560" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "strivana-website",
+    "production_branch": "main"
+  }'
+```
+
+### Step 4: Configure Custom Domain
+
+1. In your Cloudflare Pages project, go to **Custom domains**
+2. Click **Set up a custom domain**
+3. Enter: `strivanallc.com`
+4. Follow the DNS verification steps
+5. Enable **Always Use HTTPS**
+
+### Step 5: Push to GitHub
 
 ```bash
 cd C:\Users\julio\strivana-website
 git push -u origin main
 ```
 
-**If you get an authentication error:**
-1. Go to https://github.com/settings/tokens
-2. Click "Generate new token (classic)"
-3. Select scopes: `repo` (full control of private repositories)
-4. Generate token and copy it
-5. Use the token as your password when prompted
+The GitHub Actions workflow will automatically:
+1. Build the project
+2. Deploy to Cloudflare Pages
+3. Update the deployment status
 
-### Step 2: Create GitHub Repository (if needed)
+---
 
-If the push fails because the repo doesn't exist:
+## Manual Deployment (Alternative)
 
-1. Go to https://github.com/new
-2. Repository name: `strivana-website`
-3. Make it **Public**
-4. Do NOT initialize with README (we already have one)
-5. Click "Create repository"
-6. Then push again with:
-   ```bash
-   git push -u origin main
-   ```
+If you need to deploy manually without GitHub Actions:
 
-### Step 3: Enable GitHub Pages
+### Option 1: Using Wrangler CLI
 
-1. Go to your repository: https://github.com/julio686/strivana-website
-2. Click **Settings** tab
-3. Click **Pages** in the left sidebar
-4. Under "Source", select **GitHub Actions**
-5. The workflow file we created (`.github/workflows/deploy.yml`) will automatically deploy
+```bash
+# Install Wrangler
+npm install -g wrangler
 
-### Step 4: Configure Custom Domain
+# Authenticate with your API token
+wrangler login
 
-1. In the same Pages settings section
-2. Under "Custom domain", enter: `strivanallc.com`
-3. Click **Save**
-4. Check "Enforce HTTPS" (recommended)
+# Or use the API token directly
+export CLOUDFLARE_API_TOKEN=765816c65ba620fce9d4df6028129560
 
-### Step 5: Update DNS with Your Domain Provider
+# Build the project
+npm run build
 
-Add these DNS records with your domain registrar (GoDaddy, Namecheap, etc.):
+# Deploy to Cloudflare Pages
+wrangler pages deploy dist --project-name=strivana-website
+```
 
-| Type | Name | Value | TTL |
-|------|------|-------|-----|
-| A | @ | 185.199.108.153 | 600 |
-| A | @ | 185.199.109.153 | 600 |
-| A | @ | 185.199.110.153 | 600 |
-| A | @ | 185.199.111.153 | 600 |
-| CNAME | www | julio686.github.io | 600 |
+### Option 2: Using Direct Upload (Drag & Drop)
 
-Or use a CNAME record:
-| Type | Name | Value | TTL |
-|------|------|-------|-----|
-| CNAME | @ | julio686.github.io | 600 |
+1. Run `npm run build` locally
+2. Go to [Cloudflare Dashboard](https://dash.cloudflare.com) → **Pages**
+3. Select your project
+4. Click **Create deployment**
+5. Drag and drop the `dist` folder
 
-DNS changes can take up to 24-48 hours to propagate.
+### Option 3: Using API (curl)
+
+```bash
+# Build first
+npm run build
+
+# Create a zip of the dist folder
+cd dist && zip -r ../deploy.zip . && cd ..
+
+# Upload via API
+curl -X POST "https://api.cloudflare.com/client/v4/accounts/YOUR_ACCOUNT_ID/pages/projects/strivana-website/deployments" \
+  -H "Authorization: Bearer 765816c65ba620fce9d4df6028129560" \
+  -F "file=@deploy.zip"
+```
 
 ---
 
@@ -88,13 +134,14 @@ DNS changes can take up to 24-48 hours to propagate.
 After deployment, verify:
 
 - [ ] Repository visible at https://github.com/julio686/strivana-website
-- [ ] GitHub Actions workflow running (Settings → Actions)
-- [ ] Site live at https://julio686.github.io/strivana-website (temporary)
+- [ ] GitHub Actions workflow running successfully
+- [ ] Site live at Cloudflare Pages subdomain (e.g., `strivana-website.pages.dev`)
 - [ ] Site live at https://strivanallc.com (after DNS propagates)
 - [ ] All pages loading correctly
 - [ ] Contact form submits successfully
 - [ ] Chat bot working
 - [ ] Mobile responsive
+- [ ] HTTPS working with SSL certificate
 
 ---
 
@@ -109,14 +156,32 @@ Check GitHub Actions logs:
 
 Common fixes:
 - Regenerate package-lock.json: `rm package-lock.json && npm install`
-- Clear build cache: Go to Actions → Manage repository actions → Clear caches
+- Check Node.js version compatibility
+
+### Deployment Failures
+
+**API Token Issues:**
+- Verify the token has `Cloudflare Pages:Edit` permission
+- Check token hasn't expired
+- Ensure Account ID is correct
+
+**Project Not Found:**
+- Create the project first via dashboard or API
+- Verify project name matches exactly: `strivana-website`
 
 ### Custom Domain Not Working
 
-1. Verify CNAME file exists in `public/CNAME` with content: `strivanallc.com`
-2. Check DNS propagation: https://dnschecker.org
-3. Wait 24-48 hours for DNS to fully propagate
-4. Verify no conflicting DNS records
+1. Check DNS settings in Cloudflare:
+   - Ensure `strivanallc.com` has proper A/AAAA or CNAME records
+   - Proxy status should be **Proxied** (orange cloud)
+
+2. Verify CNAME file exists in `public/CNAME` with content: `strivanallc.com`
+
+3. Check SSL/TLS settings:
+   - Go to SSL/TLS → Overview
+   - Set to **Full (strict)**
+
+4. Wait for DNS propagation (can take up to 24 hours)
 
 ### FormSubmit.co Not Working
 
@@ -127,19 +192,42 @@ Common fixes:
 
 ---
 
+## Useful API Commands
+
+### Get All Deployments
+```bash
+curl "https://api.cloudflare.com/client/v4/accounts/YOUR_ACCOUNT_ID/pages/projects/strivana-website/deployments" \
+  --header "Authorization: Bearer 765816c65ba620fce9d4df6028129560"
+```
+
+### Get Project Details
+```bash
+curl "https://api.cloudflare.com/client/v4/accounts/YOUR_ACCOUNT_ID/pages/projects/strivana-website" \
+  --header "Authorization: Bearer 765816c65ba620fce9d4df6028129560"
+```
+
+### Delete a Deployment
+```bash
+curl -X DELETE "https://api.cloudflare.com/client/v4/accounts/YOUR_ACCOUNT_ID/pages/projects/strivana-website/deployments/DEPLOYMENT_ID" \
+  --header "Authorization: Bearer 765816c65ba620fce9d4df6028129560"
+```
+
+---
+
 ## Post-Deployment Tasks
 
 1. **Replace placeholder images:**
-   - Replace `public/logo.svg` with your actual logo
-   - Replace `public/favicon.svg` with your favicon
+   - Replace `public/logo.jpg` with your actual logo
+   - Replace `public/favicon.jpg` with your favicon
    - Commit and push changes
 
 2. **Update email addresses if needed:**
    - Edit `src/sections/CTA.tsx` for contact form
    - Edit `src/sections/Careers.tsx` for resume submissions
 
-3. **Add Google Analytics (optional):**
-   - Add tracking code to `index.html`
+3. **Add analytics (optional):**
+   - Cloudflare Web Analytics is available in the dashboard
+   - Or add Google Analytics to `index.html`
 
 4. **SEO optimization:**
    - Update meta description in `index.html`
@@ -147,13 +235,12 @@ Common fixes:
 
 ---
 
-## Support
+## Support Resources
 
-If you encounter issues:
-
-1. GitHub Pages docs: https://docs.github.com/en/pages
-2. FormSubmit docs: https://formsubmit.co/
-3. React + Vite deployment: https://vitejs.dev/guide/static-deploy.html
+- [Cloudflare Pages Documentation](https://developers.cloudflare.com/pages/)
+- [Cloudflare Pages API Reference](https://developers.cloudflare.com/api/resources/pages/)
+- [Wrangler CLI Documentation](https://developers.cloudflare.com/workers/wrangler/)
+- [FormSubmit Documentation](https://formsubmit.co/)
 
 ---
 
@@ -164,8 +251,7 @@ If you encounter issues:
 | Project created | ✅ Complete |
 | Git initialized | ✅ Complete |
 | Code committed | ✅ Complete |
-| Push to GitHub | ⏳ Pending authentication |
-| Enable GitHub Pages | ⏳ Pending |
-| Configure custom domain | ⏳ Pending |
-| DNS configuration | ⏳ Pending |
+| GitHub repository | ✅ Complete |
+| Cloudflare Pages setup | ⏳ Pending Account ID |
+| Custom domain configured | ⏳ Pending |
 | Site live | ⏳ Pending |
