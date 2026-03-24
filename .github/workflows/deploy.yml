@@ -35,13 +35,22 @@ jobs:
           rm -rf dist
           npm ci
 
+      - name: Check for Supabase imports
+        run: |
+          echo "Checking for Supabase imports in source..."
+          grep -r "@supabase/supabase-js" src/ || echo "No Supabase imports found in src"
+
       - name: Build
         run: npm run build
 
       - name: Verify build output
         run: |
+          echo "=== Build output ==="
           ls -la dist/
+          echo "=== index.html content ==="
           cat dist/index.html
+          echo "=== Checking built JS for Supabase error ==="
+          grep -l "supabaseUrl is required" dist/assets/*.js || echo "No Supabase URL error found in bundle"
 
       - name: Copy static files
         run: |
