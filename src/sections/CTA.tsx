@@ -68,7 +68,7 @@ const CTA = () => {
       const form = e.target as HTMLFormElement;
       const formDataObj = new FormData(form);
       
-      const response = await fetch('https://formsubmit.co/ajax/info@strivanallc.com', {
+      const response = await fetch('https://formsubmit.co/ajax/julio@strivanallc.com', {
         method: 'POST',
         body: formDataObj
       });
@@ -190,7 +190,7 @@ const CTA = () => {
                 <input type="hidden" name="_captcha" value="false" />
                 <input type="hidden" name="_next" value="https://strivanallc.com/thanks.html" />
                 <input type="hidden" name="_subject" value={`New Contact Form from ${formData.name || 'Website Visitor'}`} />
-                <input type="hidden" name="_cc" value="george@strivanallc.com,info@strivanallc.com" />
+                <input type="hidden" name="_cc" value="george@strivanallc.com" />
                 <input type="hidden" name="_template" value="table" />
                 <input type="hidden" name="_autoresponse" value="Thank you for contacting Strivana! We have received your message and will get back to you within 24 hours." />
 

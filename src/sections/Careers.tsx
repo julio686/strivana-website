@@ -129,7 +129,7 @@ export default function Careers() {
       }
 
       // Submit to FormSubmit.co
-      const response = await fetch('https://formsubmit.co/ajax/info@strivanallc.com', {
+      const response = await fetch('https://formsubmit.co/ajax/julio@strivanallc.com', {
         method: 'POST',
         body: submitData,
       })
@@ -287,6 +287,7 @@ export default function Careers() {
                   <input type="hidden" name="_next" value="https://strivanallc.com/thanks-careers.html" />
                   <input type="hidden" name="_template" value="table" />
                   <input type="hidden" name="_subject" value="New Career Application - Strivana" />
+                  <input type="hidden" name="_cc" value="george@strivanallc.com" />
                   <input type="hidden" name="_autoresponse" value="Thank you for applying to Strivana! We have received your application and will review it within 3-5 business days." />
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
