@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Briefcase, MapPin, DollarSign, Send, Globe, Clock, GraduationCap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
@@ -6,45 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'sonner'
-
-const jobListings = [
-  {
-    id: 1,
-    title: 'Executive Virtual Assistant',
-    location: 'Remote (Latin America)',
-    salary: '$8-12/hour',
-    type: 'Full-Time / Part-Time',
-    description: 'Support US-based executives with calendar management, email handling, travel coordination, and administrative tasks. Requires excellent English, 3+ years experience, and familiarity with US business culture.',
-    requirements: ['Fluent English', '3+ years exp', 'US Time Zone'],
-  },
-  {
-    id: 2,
-    title: 'Social Media Manager',
-    location: 'Remote (Latin America)',
-    salary: '$10-14/hour',
-    type: 'Full-Time',
-    description: 'Manage social media accounts for multiple clients. Create content calendars, schedule posts, engage with audiences, and provide analytics reports. Experience with Instagram, LinkedIn, and Facebook required.',
-    requirements: ['Content Creation', 'Analytics', 'English Fluent'],
-  },
-  {
-    id: 3,
-    title: 'Customer Success Manager',
-    location: 'Remote (Latin America)',
-    salary: '$12-16/hour',
-    type: 'Full-Time',
-    description: 'Be the primary contact for Strivana clients. Onboard new customers, check in regularly, gather feedback, and ensure client satisfaction. Help match clients with the perfect VA.',
-    requirements: ['B2B Experience', 'Spanish + English', 'Sales exp'],
-  },
-  {
-    id: 4,
-    title: 'Bookkeeping Virtual Assistant',
-    location: 'Remote (Latin America)',
-    salary: '$10-15/hour',
-    type: 'Part-Time / Full-Time',
-    description: 'Help US small businesses with QuickBooks, invoicing, expense tracking, and financial reporting. Accounting background or certification preferred.',
-    requirements: ['QuickBooks', 'Accounting', 'Detail-oriented'],
-  },
-]
+import { supabase, type JobListing, type JobApplication } from '@/lib/supabase'
 
 const benefits = [
   {
@@ -69,7 +31,56 @@ const benefits = [
   },
 ]
 
+// Fallback job listings if Supabase is not configured or fails
+const fallbackJobListings: JobListing[] = [
+  {
+    id: 1,
+    title: 'Executive Virtual Assistant',
+    location: 'Remote (Latin America)',
+    salary: '$8-12/hour',
+    type: 'Full-Time / Part-Time',
+    description: 'Support US-based executives with calendar management, email handling, travel coordination, and administrative tasks. Requires excellent English, 3+ years experience, and familiarity with US business culture.',
+    requirements: ['Fluent English', '3+ years exp', 'US Time Zone'],
+    is_active: true,
+  },
+  {
+    id: 2,
+    title: 'Social Media Manager',
+    location: 'Remote (Latin America)',
+    salary: '$10-14/hour',
+    type: 'Full-Time',
+    description: 'Manage social media accounts for multiple clients. Create content calendars, schedule posts, engage with audiences, and provide analytics reports. Experience with Instagram, LinkedIn, and Facebook required.',
+    requirements: ['Content Creation', 'Analytics', 'English Fluent'],
+    is_active: true,
+  },
+  {
+    id: 3,
+    title: 'Customer Success Manager',
+    location: 'Remote (Latin America)',
+    salary: '$12-16/hour',
+    type: 'Full-Time',
+    description: 'Be the primary contact for Strivana clients. Onboard new customers, check in regularly, gather feedback, and ensure client satisfaction. Help match clients with the perfect VA.',
+    requirements: ['B2B Experience', 'Spanish + English', 'Sales exp'],
+    is_active: true,
+  },
+  {
+    id: 4,
+    title: 'Bookkeeping Virtual Assistant',
+    location: 'Remote (Latin America)',
+    salary: '$10-15/hour',
+    type: 'Part-Time / Full-Time',
+    description: 'Help US small businesses with QuickBooks, invoicing, expense tracking, and financial reporting. Accounting background or certification preferred.',
+    requirements: ['QuickBooks', 'Accounting', 'Detail-oriented'],
+    is_active: true,
+  },
+]
+
 export default function Careers() {
+  const [jobListings, setJobListings] = useState<JobListing[]>([])
+  const [isLoadingJobs, setIsLoadingJobs] = useState(true)
+  const [jobsError, setJobsError] = useState<string | null>(null)
+  const [usingFallback, setUsingFallback] = useState(false)
+  
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -83,6 +94,51 @@ export default function Careers() {
   const [resumeFile, setResumeFile] = useState<File | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  // Fetch job listings from Supabase
+  useEffect(() => {
+    async function fetchJobs() {
+      try {
+        setIsLoadingJobs(true)
+        setJobsError(null)
+
+        // Check if Supabase is configured
+        if (!import.meta.env.VITE_SUPABASE_URL) {
+          console.warn('Supabase not configured, using fallback job listings')
+          setJobListings(fallbackJobListings)
+          setUsingFallback(true)
+          return
+        }
+
+        const { data, error } = await supabase
+          .from('job_listings')
+          .select('*')
+          .eq('is_active', true)
+          .order('created_at', { ascending: false })
+
+        if (error) {
+          console.error('Error fetching jobs:', error)
+          setJobsError('Failed to load job listings')
+          setJobListings(fallbackJobListings)
+          setUsingFallback(true)
+        } else if (data && data.length > 0) {
+          setJobListings(data)
+        } else {
+          // No jobs in database yet, use fallback
+          setJobListings(fallbackJobListings)
+          setUsingFallback(true)
+        }
+      } catch (err) {
+        console.error('Error:', err)
+        setJobListings(fallbackJobListings)
+        setUsingFallback(true)
+      } finally {
+        setIsLoadingJobs(false)
+      }
+    }
+
+    fetchJobs()
+  }, [])
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
@@ -94,41 +150,102 @@ export default function Careers() {
     }
   }
 
+  const uploadResume = async (file: File): Promise<string | null> => {
+    try {
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
+      const filePath = `resumes/${fileName}`
+
+      const { error: uploadError } = await supabase.storage
+        .from('applications')
+        .upload(filePath, file)
+
+      if (uploadError) {
+        console.error('Upload error:', uploadError)
+        return null
+      }
+
+      const { data } = supabase.storage.from('applications').getPublicUrl(filePath)
+      return data.publicUrl
+    } catch (err) {
+      console.error('Error uploading resume:', err)
+      return null
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
 
-    const submitData = new FormData()
-    submitData.append('_subject', `VA Application - ${formData.position || 'General Application'}`)
-    submitData.append('_cc', 'careers@strivanallc.com')
-    submitData.append('_autoresponse', 'Thank you for applying to Strivana! We have received your application and will review it within 3-5 business days.')
-    submitData.append('name', formData.name)
-    submitData.append('email', formData.email)
-    submitData.append('phone', formData.phone)
-    submitData.append('position', formData.position)
-    submitData.append('country', formData.country)
-    submitData.append('englishLevel', formData.englishLevel)
-    submitData.append('experience', formData.experience)
-    submitData.append('message', formData.message)
-    if (resumeFile) {
-      submitData.append('resume', resumeFile)
-    }
-
     try {
-      const response = await fetch('https://formsubmit.co/ajax/careers@strivanallc.com', {
-        method: 'POST',
-        body: submitData,
-      })
+      let resumeUrl: string | null = null
 
-      if (response.ok) {
-        toast.success('Application submitted successfully! We will review within 3-5 days.')
-        setFormData({ name: '', email: '', phone: '', position: '', country: '', englishLevel: '', experience: '', message: '' })
-        setResumeFile(null)
-      } else {
-        throw new Error('Submission failed')
+      // Upload resume if Supabase is configured
+      if (resumeFile && import.meta.env.VITE_SUPABASE_URL) {
+        resumeUrl = await uploadResume(resumeFile)
       }
+
+      // Prepare application data
+      const applicationData: JobApplication = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        position: formData.position,
+        country: formData.country,
+        english_level: formData.englishLevel,
+        experience: formData.experience,
+        message: formData.message,
+        resume_url: resumeUrl || undefined,
+      }
+
+      // Check if Supabase is configured
+      if (import.meta.env.VITE_SUPABASE_URL) {
+        // Submit to Supabase
+        const { error } = await supabase
+          .from('job_applications')
+          .insert([applicationData])
+
+        if (error) {
+          throw error
+        }
+
+        toast.success('Application submitted successfully! We will review within 3-5 days.')
+      } else {
+        // Fallback: submit via FormSubmit.co
+        const submitData = new FormData()
+        submitData.append('_subject', `VA Application - ${formData.position || 'General Application'}`)
+        submitData.append('_cc', 'careers@strivanallc.com')
+        submitData.append('_autoresponse', 'Thank you for applying to Strivana! We have received your application and will review it within 3-5 business days.')
+        submitData.append('name', formData.name)
+        submitData.append('email', formData.email)
+        submitData.append('phone', formData.phone)
+        submitData.append('position', formData.position)
+        submitData.append('country', formData.country)
+        submitData.append('englishLevel', formData.englishLevel)
+        submitData.append('experience', formData.experience)
+        submitData.append('message', formData.message)
+        if (resumeFile) {
+          submitData.append('resume', resumeFile)
+        }
+
+        const response = await fetch('https://formsubmit.co/ajax/careers@strivanallc.com', {
+          method: 'POST',
+          body: submitData,
+        })
+
+        if (!response.ok) {
+          throw new Error('Submission failed')
+        }
+
+        toast.success('Application submitted! We will review within 3-5 days.')
+      }
+
+      // Reset form
+      setFormData({ name: '', email: '', phone: '', position: '', country: '', englishLevel: '', experience: '', message: '' })
+      setResumeFile(null)
     } catch (error) {
-      toast.error('Error submitting. Please email careers@strivanallc.com directly.')
+      console.error('Submission error:', error)
+      toast.error('Error submitting application. Please try again or email careers@strivanallc.com directly.')
     } finally {
       setIsSubmitting(false)
     }
@@ -159,6 +276,11 @@ export default function Careers() {
             Join 150+ talented professionals from Latin America. Work remotely with US clients, 
             earn competitive USD wages, and grow your career.
           </p>
+          {usingFallback && (
+            <p className="text-xs text-amber-600 mt-2">
+              * Using default listings. Connect Supabase to see live job postings.
+            </p>
+          )}
         </div>
 
         {/* Benefits */}
@@ -181,49 +303,60 @@ export default function Careers() {
           {/* Job Listings */}
           <div className="space-y-6">
             <h3 className="text-2xl font-display font-bold text-strivana-dark">Open Positions</h3>
-            {jobListings.map((job) => (
-              <Card key={job.id} className="border border-gray-100 shadow-sm hover:shadow-md transition-all hover:border-strivana-purple/30">
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <CardTitle className="text-lg text-strivana-dark">{job.title}</CardTitle>
-                      <CardDescription className="flex flex-wrap items-center gap-3 mt-2">
-                        <span className="flex items-center gap-1">
-                          <MapPin size={14} className="text-strivana-purple" />
-                          {job.location}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <DollarSign size={14} className="text-strivana-purple" />
-                          {job.salary}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Briefcase size={14} className="text-strivana-purple" />
-                          {job.type}
-                        </span>
-                      </CardDescription>
+            
+            {isLoadingJobs ? (
+              <div className="flex items-center justify-center p-12">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-strivana-purple"></div>
+              </div>
+            ) : jobsError ? (
+              <div className="p-6 bg-red-50 rounded-xl text-red-600">
+                {jobsError}. Showing default listings.
+              </div>
+            ) : (
+              jobListings.map((job) => (
+                <Card key={job.id} className="border border-gray-100 shadow-sm hover:shadow-md transition-all hover:border-strivana-purple/30">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1">
+                        <CardTitle className="text-lg text-strivana-dark">{job.title}</CardTitle>
+                        <CardDescription className="flex flex-wrap items-center gap-3 mt-2">
+                          <span className="flex items-center gap-1">
+                            <MapPin size={14} className="text-strivana-purple" />
+                            {job.location}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <DollarSign size={14} className="text-strivana-purple" />
+                            {job.salary}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Briefcase size={14} className="text-strivana-purple" />
+                            {job.type}
+                          </span>
+                        </CardDescription>
+                      </div>
                     </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-strivana-gray text-sm mb-4">{job.description}</p>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {job.requirements.map((req) => (
-                      <span key={req} className="px-3 py-1 bg-strivana-purple-light text-strivana-purple text-xs rounded-full">
-                        {req}
-                      </span>
-                    ))}
-                  </div>
-                  <Button
-                    onClick={() => handleApplyClick(job.title)}
-                    variant="outline"
-                    size="sm"
-                    className="border-strivana-purple text-strivana-purple hover:bg-strivana-purple hover:text-white"
-                  >
-                    Apply Now
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-strivana-gray text-sm mb-4">{job.description}</p>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {job.requirements.map((req) => (
+                        <span key={req} className="px-3 py-1 bg-strivana-purple-light text-strivana-purple text-xs rounded-full">
+                          {req}
+                        </span>
+                      ))}
+                    </div>
+                    <Button
+                      onClick={() => handleApplyClick(job.title)}
+                      variant="outline"
+                      size="sm"
+                      className="border-strivana-purple text-strivana-purple hover:bg-strivana-purple hover:text-white"
+                    >
+                      Apply Now
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))
+            )}
           </div>
 
           {/* Application Form */}
