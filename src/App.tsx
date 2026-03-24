@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import './App.css';
+import { Toaster } from 'sonner';
 import Navigation from './sections/Navigation';
 import Hero from './sections/Hero';
 import Services from './sections/Services';
 import Pricing from './sections/Pricing';
 import FAQ from './sections/FAQ';
 import Testimonials from './sections/Testimonials';
+import Careers from './sections/Careers';
 import CTA from './sections/CTA';
 import Footer from './sections/Footer';
 import ChatBot from './components/ChatBot';
@@ -43,6 +45,7 @@ function App() {
         <Pricing />
         <FAQ />
         <Testimonials />
+        <Careers />
         <CTA />
       </main>
       <Footer />
@@ -58,6 +61,7 @@ function App() {
       </button>
 
       {showChat && <ChatBot onClose={() => setShowChat(false)} />}
+      <Toaster position="top-center" richColors />
     </div>
   );
 }
