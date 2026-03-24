@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'sonner'
-import { supabase, type JobListing, type JobApplication } from '@/lib/supabase'
+import { supabase, isSupabaseConfigured, type JobListing, type JobApplication } from '@/lib/supabase'
 
 const benefits = [
   {
@@ -102,7 +102,7 @@ export default function Careers() {
         setJobsError(null)
 
         // Check if Supabase is configured
-        if (!import.meta.env.VITE_SUPABASE_URL) {
+        if (!isSupabaseConfigured) {
           console.warn('Supabase not configured, using fallback job listings')
           setJobListings(fallbackJobListings)
           setUsingFallback(true)
@@ -181,7 +181,7 @@ export default function Careers() {
       let resumeUrl: string | null = null
 
       // Upload resume if Supabase is configured
-      if (resumeFile && import.meta.env.VITE_SUPABASE_URL) {
+      if (resumeFile && isSupabaseConfigured) {
         resumeUrl = await uploadResume(resumeFile)
       }
 
@@ -199,7 +199,7 @@ export default function Careers() {
       }
 
       // Check if Supabase is configured
-      if (import.meta.env.VITE_SUPABASE_URL) {
+      if (isSupabaseConfigured) {
         // Submit to Supabase
         const { error } = await supabase
           .from('job_applications')

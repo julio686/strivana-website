@@ -1,10 +1,16 @@
 // Supabase client configuration
-// NOTE: Supabase integration is disabled. The site uses fallback/mock data.
+// NOTE: Supabase is used for the Ghost Agent (SEO, GEO, digital marketing automation)
+// The client is lazy-loaded - only initialized when env vars are present or explicitly needed
+
+import { createClient, SupabaseClient } from '@supabase/supabase-js'
 
 // Check if Supabase is configured
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined
 export const isSupabaseConfigured = !!(supabaseUrl?.trim() && supabaseAnonKey?.trim())
+
+// Lazy-loaded Supabase client
+let _supabase: SupabaseClient | null = null
 
 // Create a mock query builder that supports chaining and returns proper promise
 class MockQueryBuilder {
@@ -20,7 +26,7 @@ class MockQueryBuilder {
   }
 }
 
-// Mock Supabase client that matches the SupabaseClient interface
+// Mock Supabase client for when Supabase is not configured
 const mockClient = {
   from: () => new MockQueryBuilder(),
   storage: {
@@ -29,11 +35,37 @@ const mockClient = {
       getPublicUrl: () => ({ data: { publicUrl: '' } }),
     }),
   },
+} as unknown as SupabaseClient
+
+// Get or create the Supabase client (lazy initialization)
+export function getSupabaseClient(): SupabaseClient {
+  // Return existing client if already created
+  if (_supabase) {
+    return _supabase
+  }
+  
+  // Create real client if configured
+  if (isSupabaseConfigured && supabaseUrl && supabaseAnonKey) {
+    try {
+      _supabase = createClient(supabaseUrl, supabaseAnonKey)
+      return _supabase
+    } catch (error) {
+      console.warn('Failed to create Supabase client:', error)
+    }
+  }
+  
+  // Fall back to mock client
+  return mockClient
 }
 
-// Export the mock client as the supabase client
-// This prevents the "supabaseUrl is required" error
-export const supabase = mockClient as any
+// Export the lazy-loaded supabase client
+// This prevents the "supabaseUrl is required" error at module load time
+export const supabase = new Proxy({} as SupabaseClient, {
+  get(_, prop: string | symbol) {
+    const client = getSupabaseClient()
+    return (client as any)[prop]
+  }
+})
 
 // Job listing type matching Supabase schema
 export interface JobListing {
@@ -59,4 +91,27 @@ export interface JobApplication {
   experience: string
   message?: string
   resume_url?: string
+}
+
+// Ghost Agent types for future SEO/GEO/digital marketing automation
+export interface GhostAgentTask {
+  id: string
+  task_type: 'seo' | 'geo' | 'content' | 'social' | 'analytics'
+  status: 'pending' | 'running' | 'completed' | 'failed'
+  prompt: string
+  result?: string
+  created_at: string
+  completed_at?: string
+}
+
+export interface SEOTask extends GhostAgentTask {
+  task_type: 'seo'
+  target_keywords: string[]
+  page_url: string
+}
+
+export interface GEOTask extends GhostAgentTask {
+  task_type: 'geo'
+  ai_platforms: ('perplexity' | 'chatgpt' | 'claude' | 'gemini')[]
+  visibility_goal: string
 }
