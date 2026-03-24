@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Cloudflare Account ID</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #f6821f; margin-top: 0; }
+        .method {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #f6821f;
+        }
+        .method h3 { margin-top: 0; }
+        code {
+            background: #e8e8e8;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        .highlight {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        ol li { margin: 10px 0; }
+        .account-id-box {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 16px;
+            word-break: break-all;
+        }
+        button {
+            background: #f6821f;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover { background: #e57416; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔑 Get Your Cloudflare Account ID</h1>
+        
+        <div class="highlight">
+            <strong>Your API Token:</strong><br>
+            <code>cfut_5eoK1JYJvX90LQsNhSxDCOv6PzO8FEI09UYG9RjH3c8024a4</code>
+        </div>
+
+        <div class="method">
+            <h3>Method 1: From Cloudflare Dashboard (Easiest)</h3>
+            <ol>
+                <li>Go to <a href="https://dash.cloudflare.com" target="_blank">dash.cloudflare.com</a></li>
+                <li>Select your domain <strong>strivanallc.com</strong></li>
+                <li>Look at the right sidebar</li>
+                <li>Copy the <strong>Account ID</strong> value</li>
+            </ol>
+        </div>
+
+        <div class="method">
+            <h3>Method 2: From API (Using Browser Console)</h3>
+            <ol>
+                <li>Go to <a href="https://dash.cloudflare.com" target="_blank">dash.cloudflare.com</a> and log in</li>
+                <li>Open browser Developer Tools (F12)</li>
+                <li>Go to Console tab</li>
+                <li>Paste this code and press Enter:</li>
+            </ol>
+            <pre style="background:#f4f4f4;padding:15px;border-radius:4px;overflow-x:auto;"><code>fetch('/api/v4/accounts')
+  .then(r => r.json())
+  .then(data => {
+    const acc = data.result[0];
+    console.log('Account ID:', acc.id);
+    console.log('Account Name:', acc.name);
+    alert('Account ID: ' + acc.id);
+  });</code></pre>
+        </div>
+
+        <div class="method">
+            <h3>Method 3: From Page Source</h3>
+            <ol>
+                <li>Go to <a href="https://dash.cloudflare.com" target="_blank">dash.cloudflare.com</a></li>
+                <li>Press <code>Ctrl+U</code> (or right-click → View Page Source)</li>
+                <li>Press <code>Ctrl+F</code> and search for <code>accountId</code> or <code>account_id</code></li>
+                <li>Look for a 32-character hex string</li>
+            </ol>
+        </div>
+
+        <div id="result" style="display:none;">
+            <h3>✅ Account ID Found:</h3>
+            <div class="account-id-box" id="accountId"></div>
+            <p>Add this to your GitHub Secrets as <code>CLOUDFLARE_ACCOUNT_ID</code></p>
+        </div>
+
+        <hr style="margin: 30px 0;">
+        
+        <h3>Next Steps:</h3>
+        <ol>
+            <li>Copy your Account ID using one of the methods above</li>
+            <li>Go to <a href="https://github.com/julio686/strivana-website/settings/secrets/actions" target="_blank">GitHub Secrets</a></li>
+            <li>Add two secrets:
+                <ul>
+                    <li><code>CLOUDFLARE_API_TOKEN</code> = <code>cfut_5eoK1JYJvX90LQsNhSxDCOv6PzO8FEI09UYG9RjH3c8024a4</code></li>
+                    <li><code>CLOUDFLARE_ACCOUNT_ID</code> = <em>Your Account ID</em></li>
+                </ul>
+            </li>
+            <li>Push any change to trigger deployment!</li>
+        </ol>
+    </div>
+
+    <script>
+        // Try to fetch account ID if user is logged into Cloudflare
+        fetch('https://dash.cloudflare.com/api/v4/accounts', { credentials: 'include' })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success && data.result && data.result.length > 0) {
+                    const acc = data.result[0];
+                    document.getElementById('accountId').textContent = acc.id;
+                    document.getElementById('result').style.display = 'block';
+                }
+            })
+            .catch(() => {
+                // User not logged in or CORS error - that's fine
+            });
+    </script>
+</body>
+</html>
