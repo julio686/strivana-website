@@ -62,52 +62,46 @@ const CTA = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
+    
+    if (!accessKey || accessKey === 'your-web3forms-access-key-here') {
+      toast.error('Web3Forms access key not configured. Please email us directly at info@strivanallc.com');
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
-      const form = e.target as HTMLFormElement;
-      const formDataObj = new FormData(form);
-      
-      // Try FormSubmit.co AJAX endpoint first
-      const response = await fetch('https://formsubmit.co/ajax/julio@strivanallc.com', {
+      const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        body: formDataObj,
         headers: {
+          'Content-Type': 'application/json',
           'Accept': 'application/json'
-        }
+        },
+        body: JSON.stringify({
+          access_key: accessKey,
+          name: formData.name,
+          email: formData.email,
+          company: formData.company,
+          message: formData.message,
+          subject: `New Contact Form from ${formData.name || 'Website Visitor'}`,
+          from_name: 'Strivana Website',
+          reply_to: formData.email,
+        })
       });
 
-      // Check if response is JSON
-      const contentType = response.headers.get('content-type');
-      if (contentType && contentType.includes('application/json')) {
-        const data = await response.json();
-        if (data.success === 'true' || data.success === true) {
-          toast.success('Thank you! We will get back to you within 24 hours.');
-          setFormData({ name: '', email: '', company: '', message: '' });
-          setIsSubmitted(true);
-          form.reset();
-          setTimeout(() => setIsSubmitted(false), 5000);
-          return;
-        }
+      const data = await response.json();
+      
+      if (response.status === 200 && data.success) {
+        toast.success('Thank you! We will get back to you within 24 hours.');
+        setFormData({ name: '', email: '', company: '', message: '' });
+        setIsSubmitted(true);
+        setTimeout(() => setIsSubmitted(false), 5000);
+      } else {
+        throw new Error(data.message || 'Submission failed');
       }
-      
-      // If AJAX fails, try traditional form submission
-      if (!response.ok) {
-        throw new Error('AJAX submission failed');
-      }
-      
-      // Fallback success
-      toast.success('Thank you! We will get back to you within 24 hours.');
-      setFormData({ name: '', email: '', company: '', message: '' });
-      setIsSubmitted(true);
-      form.reset();
-      setTimeout(() => setIsSubmitted(false), 5000);
-      
     } catch (error) {
       console.error('Form error:', error);
-      // Fallback: Use traditional form submission
-      const form = e.target as HTMLFormElement;
-      form.action = 'https://formsubmit.co/julio@strivanallc.com';
-      form.method = 'POST';
-      form.submit();
+      toast.error('Form submission failed. Please email us directly at info@strivanallc.com');
     } finally {
       setIsSubmitting(false);
     }
@@ -206,13 +200,8 @@ const CTA = () => {
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-5">
-                {/* Hidden fields for FormSubmit.co */}
-                <input type="hidden" name="_captcha" value="false" />
-                <input type="hidden" name="_next" value="https://strivanallc.com/thanks.html" />
-                <input type="hidden" name="_subject" value={`New Contact Form from ${formData.name || 'Website Visitor'}`} />
-                <input type="hidden" name="_cc" value="george@strivanallc.com" />
-                <input type="hidden" name="_template" value="table" />
-                <input type="hidden" name="_autoresponse" value="Thank you for contacting Strivana! We have received your message and will get back to you within 24 hours." />
+                {/* Honeypot for spam protection */}
+                <input type="checkbox" name="botcheck" style={{ display: 'none' }} />
 
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-strivana-dark mb-2">

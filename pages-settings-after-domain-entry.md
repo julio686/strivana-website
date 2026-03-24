@@ -1,0 +1,378 @@
+- generic [ref=e2]:
+  - region
+  - generic [ref=e3]:
+    - link "Skip to content" [ref=e4] [cursor=pointer]:
+      - /url: "#start-of-content"
+    - banner "Global Navigation Menu" [ref=e8]:
+      - generic [ref=e9]:
+        - generic [ref=e10]:
+          - button "Open menu" [ref=e12] [cursor=pointer]:
+            - img [ref=e13]
+          - link "Homepage (g then d)" [ref=e15] [cursor=pointer]:
+            - /url: /
+            - img [ref=e16]
+        - generic [ref=e18]:
+          - navigation "Breadcrumbs" [ref=e19]:
+            - list [ref=e20]:
+              - listitem [ref=e21]:
+                - link "julio686" [ref=e22] [cursor=pointer]:
+                  - /url: /julio686
+                  - generic [ref=e23]: julio686
+              - listitem [ref=e24]:
+                - link "strivana-website" [ref=e25] [cursor=pointer]:
+                  - /url: /julio686/strivana-website
+                  - generic [ref=e26]: strivana-website
+          - button "Search or jump to…" [ref=e29] [cursor=pointer]:
+            - generic [ref=e30]:
+              - generic:
+                - img
+              - generic [ref=e31]:
+                - generic:
+                  - text: Type
+                  - generic: /
+                  - text: to search
+        - generic [ref=e32]:
+          - generic [ref=e33]:
+            - generic [ref=e35]:
+              - link "Chat with Copilot" [ref=e37] [cursor=pointer]:
+                - /url: /copilot
+                - img [ref=e38]
+              - button "Open Copilot…" [ref=e42] [cursor=pointer]:
+                - generic:
+                  - img
+            - button "Create new..." [ref=e44] [cursor=pointer]:
+              - generic [ref=e45]:
+                - generic:
+                  - img
+              - generic:
+                - img
+            - link "Issues" [ref=e46] [cursor=pointer]:
+              - /url: /issues
+              - img [ref=e47]
+            - link "Pull requests" [ref=e50] [cursor=pointer]:
+              - /url: /pulls
+              - img [ref=e51]
+            - link "Repositories" [ref=e53] [cursor=pointer]:
+              - /url: /repos
+              - img [ref=e54]
+          - link "You have unread notifications (g then n)" [ref=e56] [cursor=pointer]:
+            - /url: /notifications
+            - img [ref=e57]
+          - button "Open user navigation menu" [ref=e60] [cursor=pointer]:
+            - img "User avatar" [ref=e61]
+      - heading "Repository navigation" [level=2] [ref=e62]
+      - navigation "Repository" [ref=e63]:
+        - list [ref=e64]:
+          - listitem [ref=e65]:
+            - link "Code" [ref=e66] [cursor=pointer]:
+              - /url: /julio686/strivana-website
+              - img [ref=e68]
+              - generic [ref=e70]: Code
+          - listitem [ref=e71]:
+            - link "Issues" [ref=e72] [cursor=pointer]:
+              - /url: /julio686/strivana-website/issues
+              - img [ref=e74]
+              - generic [ref=e77]: Issues
+          - listitem [ref=e78]:
+            - link "Pull requests" [ref=e79] [cursor=pointer]:
+              - /url: /julio686/strivana-website/pulls
+              - img [ref=e81]
+              - generic [ref=e83]: Pull requests
+          - listitem [ref=e84]:
+            - link "Actions" [ref=e85] [cursor=pointer]:
+              - /url: /julio686/strivana-website/actions
+              - img [ref=e87]
+              - generic [ref=e89]: Actions
+          - listitem [ref=e90]:
+            - link "Projects" [ref=e91] [cursor=pointer]:
+              - /url: /julio686/strivana-website/projects
+              - img [ref=e93]
+              - generic [ref=e95]: Projects
+          - listitem [ref=e96]:
+            - link "Wiki" [ref=e97] [cursor=pointer]:
+              - /url: /julio686/strivana-website/wiki
+              - img [ref=e99]
+              - generic [ref=e101]: Wiki
+          - listitem [ref=e102]:
+            - link "Security" [ref=e103] [cursor=pointer]:
+              - /url: /julio686/strivana-website/security
+              - img [ref=e105]
+              - generic [ref=e107]: Security
+          - listitem [ref=e108]:
+            - link "Insights" [ref=e109] [cursor=pointer]:
+              - /url: /julio686/strivana-website/pulse
+              - img [ref=e111]
+              - generic [ref=e113]: Insights
+          - listitem [ref=e114]:
+            - link "Settings" [ref=e115] [cursor=pointer]:
+              - /url: /julio686/strivana-website/settings
+              - img [ref=e117]
+              - generic [ref=e119]: Settings
+  - main [ref=e122]:
+    - generic [ref=e124]:
+      - 'heading "Settings: julio686/strivana-website" [level=1] [ref=e125]'
+      - generic [ref=e127]:
+        - navigation "General settings" [ref=e130]:
+          - list [ref=e132]:
+            - listitem [ref=e133]:
+              - link "General" [ref=e134] [cursor=pointer]:
+                - /url: /julio686/strivana-website/settings
+                - generic:
+                  - img
+                - generic [ref=e135]: General
+            - listitem [ref=e136]
+            - listitem [ref=e137]:
+              - generic [ref=e140]:
+                - heading "Access" [level=2] [ref=e142]
+                - list "Access" [ref=e143]:
+                  - listitem [ref=e144]:
+                    - link "Collaborators" [ref=e145] [cursor=pointer]:
+                      - /url: /julio686/strivana-website/settings/access
+                      - generic:
+                        - img
+                      - generic [ref=e146]: Collaborators
+                  - listitem [ref=e147]:
+                    - button "Moderation options" [ref=e148] [cursor=pointer]:
+                      - generic:
+                        - img
+                      - generic [ref=e149]: Moderation options
+                      - generic:
+                        - img
+            - listitem [ref=e150]
+            - listitem [ref=e151]:
+              - generic [ref=e154]:
+                - heading "Code and automation" [level=2] [ref=e156]
+                - list "Code and automation" [ref=e157]:
+                  - listitem [ref=e158]:
+                    - link "Branches" [ref=e159] [cursor=pointer]:
+                      - /url: /julio686/strivana-website/settings/branches
+                      - generic:
+                        - img
+                      - generic [ref=e160]: Branches
+                  - listitem [ref=e161]:
+                    - link "Tags" [ref=e162] [cursor=pointer]:
+                      - /url: /julio686/strivana-website/settings/tag_protection
+                      - generic:
+                        - img
+                      - generic [ref=e163]: Tags
+                  - listitem [ref=e164]:
+                    - button "Rules" [ref=e165] [cursor=pointer]:
+                      - generic:
+                        - img
+                      - generic [ref=e166]: Rules
+                      - generic:
+                        - img
+                  - listitem [ref=e167]:
+                    - button "Actions" [ref=e168] [cursor=pointer]:
+                      - generic:
+                        - img
+                      - generic [ref=e169]: Actions
+                      - generic:
+                        - img
+                  - listitem [ref=e170]:
+                    - link "Models Preview feature" [ref=e171] [cursor=pointer]:
+                      - /url: /julio686/strivana-website/settings/models/access-policy
+                      - generic:
+                        - img
+                      - generic [ref=e172]: Models
+                      - generic:
+                        - generic "Preview feature": Preview
+                  - listitem [ref=e173]:
+                    - link "Webhooks" [ref=e174] [cursor=pointer]:
+                      - /url: /julio686/strivana-website/settings/hooks
+                      - generic:
+                        - img
+                      - generic [ref=e175]: Webhooks
+                  - listitem [ref=e176]:
+                    - button "Copilot" [ref=e177] [cursor=pointer]:
+                      - generic:
+                        - img
+                      - generic [ref=e178]: Copilot
+                      - generic:
+                        - img
+                  - listitem [ref=e179]:
+                    - link "Environments" [ref=e180] [cursor=pointer]:
+                      - /url: /julio686/strivana-website/settings/environments
+                      - generic:
+                        - img
+                      - generic [ref=e181]: Environments
+                  - listitem [ref=e182]:
+                    - link "Codespaces" [ref=e183] [cursor=pointer]:
+                      - /url: /julio686/strivana-website/settings/codespaces
+                      - generic:
+                        - img
+                      - generic [ref=e184]: Codespaces
+                  - listitem [ref=e185]:
+                    - link "Pages" [ref=e186] [cursor=pointer]:
+                      - /url: /julio686/strivana-website/settings/pages
+                      - generic:
+                        - img
+                      - generic [ref=e187]: Pages
+            - listitem [ref=e188]
+            - listitem [ref=e189]:
+              - generic [ref=e192]:
+                - heading "Security" [level=2] [ref=e194]
+                - list "Security" [ref=e195]:
+                  - listitem [ref=e196]:
+                    - link "Advanced Security" [ref=e197] [cursor=pointer]:
+                      - /url: /julio686/strivana-website/settings/security_analysis
+                      - generic:
+                        - img
+                      - generic [ref=e198]: Advanced Security
+                  - listitem [ref=e199]:
+                    - link "Deploy keys" [ref=e200] [cursor=pointer]:
+                      - /url: /julio686/strivana-website/settings/keys
+                      - generic:
+                        - img
+                      - generic [ref=e201]: Deploy keys
+                  - listitem [ref=e202]:
+                    - button "Secrets and variables" [ref=e203] [cursor=pointer]:
+                      - generic:
+                        - img
+                      - generic [ref=e204]: Secrets and variables
+                      - generic:
+                        - img
+            - listitem [ref=e205]
+            - listitem [ref=e206]:
+              - generic [ref=e209]:
+                - heading "Integrations" [level=2] [ref=e211]
+                - list "Integrations" [ref=e212]:
+                  - listitem [ref=e213]:
+                    - link "GitHub Apps" [ref=e214] [cursor=pointer]:
+                      - /url: /julio686/strivana-website/settings/installations
+                      - generic:
+                        - img
+                      - generic [ref=e215]: GitHub Apps
+                  - listitem [ref=e216]:
+                    - link "Email notifications" [ref=e217] [cursor=pointer]:
+                      - /url: /julio686/strivana-website/settings/notifications
+                      - generic:
+                        - img
+                      - generic [ref=e218]: Email notifications
+        - generic [ref=e221]:
+          - heading "GitHub Pages" [level=2] [ref=e223]
+          - paragraph [ref=e224]:
+            - link "GitHub Pages" [ref=e225] [cursor=pointer]:
+              - /url: https://pages.github.com
+            - text: is designed to host your personal, organization, or project pages from a GitHub repository.
+          - generic [ref=e226]:
+            - generic [ref=e227]:
+              - generic [ref=e228]:
+                - text: Your site is live at
+                - link "https://julio686.github.io/strivana-website/" [ref=e229] [cursor=pointer]:
+                  - /url: https://julio686.github.io/strivana-website/
+              - generic [ref=e230]:
+                - text: Last
+                - link "deployed" [ref=e231] [cursor=pointer]:
+                  - /url: /julio686/strivana-website/actions/runs/23515818913
+                - text: by
+                - img "@julio686" [ref=e232]
+                - link "julio686" [ref=e233] [cursor=pointer]:
+                  - /url: /julio686
+                - text: March 24, 2026 18:444 minutes ago
+            - generic [ref=e234]:
+              - link "Visit site" [ref=e235] [cursor=pointer]:
+                - /url: https://julio686.github.io/strivana-website/
+                - img [ref=e236]
+                - text: Visit site
+              - button "Unpublish site" [ref=e238] [cursor=pointer]:
+                - generic [ref=e240]: Unpublish site
+          - heading "Build and deployment" [level=2] [ref=e241]
+          - generic [ref=e243]:
+            - text: Source
+            - button "Source GitHub Actions" [ref=e247] [cursor=pointer]:
+              - generic [ref=e249]: GitHub Actions
+              - generic:
+                - img
+          - generic [ref=e250]:
+            - text: Your site was last deployed to the
+            - link "github-pages" [ref=e251] [cursor=pointer]:
+              - /url: /julio686/strivana-website/deployments?environment=github-pages#activity-log
+            - text: environment by the
+            - link "Deploy to GitHub Pages" [ref=e253] [cursor=pointer]:
+              - /url: /julio686/strivana-website/actions/runs/23515818913
+            - text: workflow.
+            - paragraph [ref=e254]:
+              - link "Learn more about deploying to GitHub Pages using custom workflows" [ref=e255] [cursor=pointer]:
+                - /url: https://docs.github.com/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#publishing-with-a-custom-github-actions-workflow
+          - heading "Custom domain" [level=3] [ref=e256]
+          - generic [ref=e257]:
+            - generic [ref=e259]:
+              - term [ref=e260]:
+                - generic [ref=e261]: Custom domain
+                - paragraph [ref=e262]:
+                  - text: Custom domains allow you to serve your site from a domain other than
+                  - code [ref=e263]: julio686.github.io
+                  - text: .
+                  - link "Learn more about configuring custom domains" [ref=e264] [cursor=pointer]:
+                    - /url: https://docs.github.com/pages/configuring-a-custom-domain-for-your-github-pages-site
+                  - text: .
+              - definition [ref=e265]:
+                - generic [ref=e266]:
+                  - textbox "Custom domain" [active] [ref=e268]: strivanallc.com
+                  - generic [ref=e269]:
+                    - button "Save" [ref=e270] [cursor=pointer]
+                    - button "Remove" [disabled] [ref=e271]
+                - paragraph
+            - separator [ref=e272]
+          - generic [ref=e274]:
+            - checkbox "Enforce HTTPS — Required for your site because you are using the default domain (julio686.github.io)" [checked] [disabled] [ref=e275]
+            - generic [ref=e276]:
+              - text: Enforce HTTPS
+              - generic [ref=e277]:
+                - text: — Required for your site because you are using the default domain (
+                - code [ref=e278]: julio686.github.io
+                - text: )
+            - paragraph [ref=e280]:
+              - text: HTTPS provides a layer of encryption that prevents others from snooping on or tampering with traffic to your site.
+              - text: When HTTPS is enforced, your site will only be served over HTTPS.
+              - link "Learn more about securing your GitHub Pages site with HTTPS" [ref=e281] [cursor=pointer]:
+                - /url: https://docs.github.com/pages/getting-started-with-github-pages/securing-your-github-pages-site-with-https
+              - text: .
+          - generic [ref=e282]:
+            - generic [ref=e283]:
+              - heading "Visibility" [level=3] [ref=e284]
+              - generic [ref=e285]: GitHub Enterprise
+            - paragraph [ref=e286]:
+              - text: With a GitHub Enterprise account, you can restrict access to your GitHub Pages site by publishing it privately. You can use privately published sites to share your internal documentation or knowledge base with members of your enterprise. You can try GitHub Enterprise risk-free for 30 days.
+              - link "Learn more about the visibility of your GitHub Pages site." [ref=e287] [cursor=pointer]:
+                - /url: https://docs.github.com/pages/getting-started-with-github-pages/changing-the-visibility-of-your-github-pages-site
+            - link "Start free for 30 days" [ref=e288] [cursor=pointer]:
+              - /url: /account/enterprises/new
+              - generic [ref=e290]: Start free for 30 days
+  - contentinfo [ref=e291]:
+    - heading "Footer" [level=2] [ref=e292]
+    - generic [ref=e293]:
+      - generic [ref=e294]:
+        - link "GitHub Homepage" [ref=e295] [cursor=pointer]:
+          - /url: https://github.com
+          - img [ref=e296]
+        - generic [ref=e298]: © 2026 GitHub, Inc.
+      - navigation "Footer" [ref=e299]:
+        - heading "Footer navigation" [level=3] [ref=e300]
+        - list "Footer navigation" [ref=e301]:
+          - listitem [ref=e302]:
+            - link "Terms" [ref=e303] [cursor=pointer]:
+              - /url: https://docs.github.com/site-policy/github-terms/github-terms-of-service
+          - listitem [ref=e304]:
+            - link "Privacy" [ref=e305] [cursor=pointer]:
+              - /url: https://docs.github.com/site-policy/privacy-policies/github-privacy-statement
+          - listitem [ref=e306]:
+            - link "Security" [ref=e307] [cursor=pointer]:
+              - /url: https://github.com/security
+          - listitem [ref=e308]:
+            - link "Status" [ref=e309] [cursor=pointer]:
+              - /url: https://www.githubstatus.com/
+          - listitem [ref=e310]:
+            - link "Community" [ref=e311] [cursor=pointer]:
+              - /url: https://github.community/
+          - listitem [ref=e312]:
+            - link "Docs" [ref=e313] [cursor=pointer]:
+              - /url: https://docs.github.com/
+          - listitem [ref=e314]:
+            - link "Contact" [ref=e315] [cursor=pointer]:
+              - /url: https://support.github.com?tags=dotcom-footer
+          - listitem [ref=e316]:
+            - button "Manage cookies" [ref=e318] [cursor=pointer]
+          - listitem [ref=e319]:
+            - button "Do not share my personal information" [ref=e321] [cursor=pointer]

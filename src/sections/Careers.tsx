@@ -76,7 +76,6 @@ const fallbackJobListings = [
 
 export default function Careers() {
   const [jobListings] = useState(fallbackJobListings)
-  const [isLoadingJobs] = useState(false)
   const [resumeFile, setResumeFile] = useState<File | null>(null)
   const [resumeFileName, setResumeFileName] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -102,7 +101,7 @@ export default function Careers() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0]
-      // Check file size (5MB limit)
+      // Check file size (5MB limit for FormSubmit)
       if (file.size > 5 * 1024 * 1024) {
         toast.error('File size must be less than 5MB')
         return
@@ -123,26 +122,23 @@ export default function Careers() {
       // Create FormData object
       const submitData = new FormData(form)
       
-      // Append file if selected (FormSubmit.co handles file uploads)
+      // Append file if selected
       if (resumeFile) {
-        submitData.append('Resume', resumeFile, resumeFile.name)
+        submitData.append('resume', resumeFile, resumeFile.name)
       }
 
-      // Submit to FormSubmit.co AJAX endpoint
+      // Submit to FormSubmit.co using fetch
       const response = await fetch('https://formsubmit.co/ajax/julio@strivanallc.com', {
         method: 'POST',
         body: submitData,
-        headers: {
-          'Accept': 'application/json'
-        }
       })
 
-      // Check if response is JSON
-      const contentType = response.headers.get('content-type')
-      if (contentType && contentType.includes('application/json')) {
+      // FormSubmit.co returns JSON on success
+      if (response.ok) {
         const data = await response.json()
         if (data.success === 'true' || data.success === true) {
           toast.success('Application submitted successfully! We will review within 3-5 business days.')
+          // Reset form
           setFormData({ 
             name: '', 
             email: '', 
@@ -166,16 +162,9 @@ export default function Careers() {
         }
       }
       
-      // If AJAX fails, try traditional form submission (more reliable for file uploads)
-      if (!response.ok) {
-        throw new Error('AJAX submission failed')
-      }
-      
-      // Fallback success
-      toast.success('Application submitted successfully!')
-      setTimeout(() => {
-        window.location.href = '/thanks-careers.html'
-      }, 1500)
+      // If we get here, the AJAX submission failed
+      // Fall back to traditional form submission
+      throw new Error('AJAX submission failed')
       
     } catch (error) {
       console.error('Submission error:', error)
@@ -184,6 +173,9 @@ export default function Careers() {
       if (form) {
         form.action = 'https://formsubmit.co/julio@strivanallc.com'
         form.method = 'POST'
+        form.enctype = 'multipart/form-data'
+        // Remove onSubmit handler to prevent infinite loop
+        form.onsubmit = null
         form.submit()
       }
     } finally {
@@ -239,55 +231,49 @@ export default function Careers() {
           <div className="space-y-6">
             <h3 className="text-2xl font-display font-bold text-strivana-dark">Open Positions</h3>
             
-            {isLoadingJobs ? (
-              <div className="flex items-center justify-center p-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-strivana-purple"></div>
-              </div>
-            ) : (
-              jobListings.map((job) => (
-                <Card key={job.id} className="border border-gray-100 shadow-sm hover:shadow-md transition-all hover:border-strivana-purple/30">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <CardTitle className="text-lg text-strivana-dark">{job.title}</CardTitle>
-                        <CardDescription className="flex flex-wrap items-center gap-3 mt-2">
-                          <span className="flex items-center gap-1">
-                            <MapPin size={14} className="text-strivana-purple" />
-                            {job.location}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <DollarSign size={14} className="text-strivana-purple" />
-                            {job.salary}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Briefcase size={14} className="text-strivana-purple" />
-                            {job.type}
-                          </span>
-                        </CardDescription>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-strivana-gray text-sm mb-4">{job.description}</p>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {job.requirements.map((req) => (
-                        <span key={req} className="px-3 py-1 bg-strivana-purple-light text-strivana-purple text-xs rounded-full">
-                          {req}
+            {jobListings.map((job) => (
+              <Card key={job.id} className="border border-gray-100 shadow-sm hover:shadow-md transition-all hover:border-strivana-purple/30">
+                <CardHeader className="pb-3">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1">
+                      <CardTitle className="text-lg text-strivana-dark">{job.title}</CardTitle>
+                      <CardDescription className="flex flex-wrap items-center gap-3 mt-2">
+                        <span className="flex items-center gap-1">
+                          <MapPin size={14} className="text-strivana-purple" />
+                          {job.location}
                         </span>
-                      ))}
+                        <span className="flex items-center gap-1">
+                          <DollarSign size={14} className="text-strivana-purple" />
+                          {job.salary}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Briefcase size={14} className="text-strivana-purple" />
+                          {job.type}
+                        </span>
+                      </CardDescription>
                     </div>
-                    <Button
-                      onClick={() => handleApplyClick(job.title)}
-                      variant="outline"
-                      size="sm"
-                      className="border-strivana-purple text-strivana-purple hover:bg-strivana-purple hover:text-white"
-                    >
-                      Apply Now
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))
-            )}
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-strivana-gray text-sm mb-4">{job.description}</p>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {job.requirements.map((req) => (
+                      <span key={req} className="px-3 py-1 bg-strivana-purple-light text-strivana-purple text-xs rounded-full">
+                        {req}
+                      </span>
+                    ))}
+                  </div>
+                  <Button
+                    onClick={() => handleApplyClick(job.title)}
+                    variant="outline"
+                    size="sm"
+                    className="border-strivana-purple text-strivana-purple hover:bg-strivana-purple hover:text-white"
+                  >
+                    Apply Now
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
           </div>
 
           {/* Application Form */}
