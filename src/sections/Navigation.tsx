@@ -4,10 +4,25 @@ import { Menu, X } from 'lucide-react';
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('');
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
+      
+      // Determine active section
+      const sections = navLinks.map(link => link.href.replace('#', ''));
+      for (const section of sections.reverse()) {
+        const element = document.getElementById(section);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          if (rect.top <= 100) {
+            setActiveSection(section);
+            break;
+          }
+        }
+      }
+      if (window.scrollY < 100) setActiveSection('');
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -32,11 +47,11 @@ const Navigation = () => {
 
   const navLinks = [
     { name: 'Services', href: '#services' },
+    { name: 'How It Works', href: '#how-it-works' },
+    { name: 'Why Us', href: '#why-strivana' },
     { name: 'Pricing', href: '#pricing' },
     { name: 'FAQ', href: '#faq' },
-    { name: 'Testimonials', href: '#testimonials' },
     { name: 'Careers', href: '#careers' },
-    { name: 'Contact', href: '#contact' },
   ];
 
   return (
@@ -73,22 +88,29 @@ const Navigation = () => {
           </a>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                onClick={(e) => handleNavClick(e, link.href)}
-                className="text-sm font-medium text-strivana-gray hover:text-strivana-purple transition-colors duration-200 relative group cursor-pointer"
-              >
-                {link.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-strivana-purple transition-all duration-300 group-hover:w-full" />
-              </a>
-            ))}
+          <div className="hidden lg:flex items-center gap-6">
+            {navLinks.map((link) => {
+              const isActive = activeSection === link.href.replace('#', '');
+              return (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  onClick={(e) => handleNavClick(e, link.href)}
+                  className={`text-sm font-medium transition-colors duration-200 relative group cursor-pointer ${
+                    isActive ? 'text-strivana-purple' : 'text-strivana-gray hover:text-strivana-purple'
+                  }`}
+                >
+                  {link.name}
+                  <span className={`absolute -bottom-1 left-0 h-0.5 bg-strivana-purple transition-all duration-300 ${
+                    isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                  }`} />
+                </a>
+              );
+            })}
           </div>
 
           {/* CTA Button */}
-          <div className="hidden md:block">
+          <div className="hidden lg:block">
             <a
               href="#contact"
               onClick={(e) => handleNavClick(e, '#contact')}
@@ -100,14 +122,14 @@ const Navigation = () => {
                 <line x1="8" y1="2" x2="8" y2="6"/>
                 <line x1="3" y1="10" x2="21" y2="10"/>
               </svg>
-              Schedule a Consultation
+              Get Started
             </a>
           </div>
 
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 text-strivana-dark hover:text-strivana-purple transition-colors"
+            className="lg:hidden p-2 text-strivana-dark hover:text-strivana-purple transition-colors"
             aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -116,24 +138,31 @@ const Navigation = () => {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden mt-4 pb-4 border-t border-gray-100 animate-slide-up">
-            <div className="flex flex-col gap-2 pt-4">
-              {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  onClick={(e) => handleNavClick(e, link.href)}
-                  className="text-left px-4 py-3 text-strivana-gray hover:text-strivana-purple hover:bg-strivana-purple-light rounded-lg transition-colors cursor-pointer"
-                >
-                  {link.name}
-                </a>
-              ))}
+          <div className="lg:hidden mt-4 pb-4 border-t border-gray-100 animate-slide-up">
+            <div className="flex flex-col gap-1 pt-4">
+              {navLinks.map((link) => {
+                const isActive = activeSection === link.href.replace('#', '');
+                return (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    onClick={(e) => handleNavClick(e, link.href)}
+                    className={`text-left px-4 py-3 rounded-lg transition-colors cursor-pointer ${
+                      isActive 
+                        ? 'text-strivana-purple bg-strivana-purple-light font-medium' 
+                        : 'text-strivana-gray hover:text-strivana-purple hover:bg-strivana-purple-light'
+                    }`}
+                  >
+                    {link.name}
+                  </a>
+                );
+              })}
               <a
                 href="#contact"
                 onClick={(e) => handleNavClick(e, '#contact')}
-                className="mt-2 mx-4 px-5 py-3 bg-strivana-purple text-white text-center font-medium rounded-full hover:bg-strivana-purple-dark transition-colors cursor-pointer"
+                className="mt-3 mx-4 px-5 py-3 bg-strivana-purple text-white text-center font-medium rounded-full hover:bg-strivana-purple-dark transition-colors cursor-pointer"
               >
-                Schedule a Consultation
+                Get Started
               </a>
             </div>
           </div>

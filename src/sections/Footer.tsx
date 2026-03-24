@@ -1,4 +1,4 @@
-import { Instagram, Facebook, Twitter, Youtube, Linkedin, Mail, MapPin } from 'lucide-react';
+import { Instagram, Facebook, Twitter, Linkedin, Mail, MapPin } from 'lucide-react';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -13,9 +13,9 @@ const Footer = () => {
     ],
     company: [
       { name: 'About Us', href: '#' },
-      { name: 'Our Team', href: '#' },
       { name: 'Careers', href: '#careers' },
-      { name: 'Blog', href: '#' },
+      { name: 'For VAs', href: '#careers' },
+      { name: 'Contact', href: '#contact' },
     ],
     support: [
       { name: 'FAQs', href: '#faq' },
@@ -26,11 +26,10 @@ const Footer = () => {
   };
 
   const socialLinks = [
-    { icon: Instagram, href: 'https://instagram.com', label: 'Instagram' },
-    { icon: Facebook, href: 'https://facebook.com', label: 'Facebook' },
-    { icon: Twitter, href: 'https://twitter.com', label: 'Twitter' },
-    { icon: Youtube, href: 'https://youtube.com', label: 'YouTube' },
-    { icon: Linkedin, href: 'https://linkedin.com', label: 'LinkedIn' },
+    { icon: Linkedin, href: 'https://linkedin.com/company/strivana', label: 'LinkedIn' },
+    { icon: Instagram, href: 'https://instagram.com/strivana', label: 'Instagram' },
+    { icon: Facebook, href: 'https://facebook.com/strivana', label: 'Facebook' },
+    { icon: Twitter, href: 'https://twitter.com/strivana', label: 'Twitter' },
   ];
 
   const scrollToSection = (href: string) => {

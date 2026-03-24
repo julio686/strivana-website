@@ -13,23 +13,27 @@ interface ChatBotProps {
 }
 
 const predefinedResponses: Record<string, string> = {
-  'pricing': 'Our pricing starts at $10-12/hour for the Starter plan, $13-17/hour for Professional, and $18+/hour for Executive. All plans are month-to-month with no long-term contracts. Would you like to schedule a consultation to discuss which plan fits your needs?',
-  'hours': 'Our VAs work in US and Canada time zones, providing same-day turnaround for most tasks. Starter and Professional plans include business hours support (9 AM - 6 PM), while our Executive plan offers extended or 24/7 availability.',
-  'services': 'We offer a wide range of services including: Travel Planning, Appointment Scheduling, Personal Shopping, Research Assistance, Email Management, and Social Media Management. We also provide specialized support for Executive Assistance, Sales & Marketing, Bookkeeping, and Project Management.',
-  'start': 'Getting started is easy! Simply fill out the contact form or schedule a free consultation. During the call, we will discuss your needs, match you with the perfect VA, and you can start working within 24-48 hours.',
-  'security': 'We take data security very seriously. All our VAs sign comprehensive NDAs, and we use enterprise-grade encryption for all communications. Our systems are GDPR and HIPAA compliant where applicable.',
-  'location': 'Our VAs are based in Latin America (Colombia, Mexico, Argentina) and work in US/Canada time zones. This allows us to provide same-day turnaround while offering 70% cost savings compared to local hiring.',
-  'vetting': 'All our VAs go through a rigorous selection process including background checks, skills assessments, and multiple interviews. They are university-educated professionals with at least 3 years of experience.',
-  'cancel': 'We offer flexible month-to-month contracts. You can upgrade, downgrade, or cancel your plan at any time with 7 days notice. We also provide a 7-day satisfaction guarantee for new clients.',
-  'consultation': 'You can schedule a free consultation by clicking the "Schedule a Consultation" button on our website, or by filling out the contact form. We will get back to you within 24 hours to set up a time that works for you.',
+  'pricing': 'Our pricing is transparent: Starter VAs at $10-12/hour, Professional at $13-17/hour, and Executive at $18+/hour. This includes everything – no setup fees, no hidden costs. You pay the hourly rate directly to your VA. We charge a one-time flat placement fee only after you hire.',
+  'hours': 'Our VAs work in your time zone (US/Canada hours). They provide same-day turnaround for most tasks during business hours (9 AM - 6 PM). Executive plans offer extended or 24/7 availability.',
+  'services': 'We offer comprehensive virtual assistant services: Email & Calendar Management, Travel Planning, Social Media Management, Customer Service, Data Entry, Research, Bookkeeping, and Executive Assistance. Need something specific? Just ask!',
+  'start': 'Getting started takes 3 simple steps: 1) Fill out the contact form, 2) We match you with 2-3 pre-vetted VAs, 3) Interview and hire your favorite. You can start working within 24-48 hours.',
+  'security': 'Security is our priority. All VAs sign NDAs, use secure communication channels, and follow strict data protection protocols. We are GDPR compliant and can accommodate HIPAA requirements for healthcare clients.',
+  'location': 'Our VAs are university-educated professionals from Latin America (Colombia, Mexico, Argentina, etc.). They work in US/Canada time zones with fluent English and strong cultural alignment.',
+  'vetting': 'Our vetting process is rigorous: English fluency testing, background checks, skills assessments, and multiple interviews. Only the top 5% of applicants are accepted to our network.',
+  'cancel': 'We offer flexible arrangements with no long-term contracts. You can adjust hours, change VAs, or pause service with 7 days notice. New clients get a 7-day satisfaction guarantee.',
+  'consultation': 'Schedule a free consultation by filling out the contact form or clicking "Schedule a Consultation." We will get back to you within 24 hours to discuss your needs and match you with the perfect VA.',
+  'fee': 'We charge a one-time flat placement fee ONLY after you successfully hire. There are no ongoing agency fees, no monthly charges. You pay your VA directly – they keep 100% of their hourly rate.',
+  'pay': 'You pay your VA directly via bank transfer, PayPal, or other agreed method. We handle all the compliance, contracts, and paperwork. Simple and transparent.',
+  'trial': 'Yes! We offer a 7-day satisfaction guarantee. If you are not satisfied with your VA in the first week, we will find you a replacement at no additional cost.',
+  'english': 'All our VAs are fluent English speakers with minimal accents. They submit voice recordings during application, and we only accept those with excellent communication skills.',
 };
 
 const suggestedQuestions = [
   'What are your pricing plans?',
-  'What services do you offer?',
+  'How does the placement fee work?',
   'How do I get started?',
-  'What are your working hours?',
-  'How do you ensure data security?',
+  'What if I am not satisfied?',
+  'How do you vet your VAs?',
 ];
 
 const ChatBot = ({ onClose }: ChatBotProps) => {
@@ -78,7 +82,7 @@ const ChatBot = ({ onClose }: ChatBotProps) => {
       return 'Thank you for chatting with us! Feel free to reach out anytime. Have a great day!';
     }
     if (lowerMessage.includes('contact') || lowerMessage.includes('email') || lowerMessage.includes('phone')) {
-      return 'You can reach us at hello@strivana.com or call us at +1 (555) 123-4567. You can also fill out the contact form on our website and we will get back to you within 24 hours.';
+      return 'You can reach us at info@strivanallc.com. Fill out the contact form on our website and we will get back to you within 24 hours.';
     }
 
     // Default response

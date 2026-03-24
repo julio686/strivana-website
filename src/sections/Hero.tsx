@@ -62,14 +62,14 @@ const Hero = () => {
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold text-strivana-dark leading-tight animate-slide-in-left" style={{ animationDelay: '0.1s' }}>
-              Top-Tier Virtual{' '}
-              <span className="text-strivana-purple">Assistant</span>{' '}
-              Services Tailored for You
+              Hire Elite Virtual{' '}
+              <span className="text-strivana-purple">Assistants</span>{' '}
+              From Latin America
             </h1>
 
             <p className="text-lg text-strivana-gray max-w-lg animate-slide-in-left" style={{ animationDelay: '0.2s' }}>
-              Enhance Your Productivity to the Max with Personalized Support and Guidance. 
-              University-educated VAs from Latin America, working in your time zone.
+              University-educated professionals, fluent English, US time zones. 
+              Save 70% on staffing costs without compromising quality.
             </p>
 
             <div className="flex flex-wrap gap-4 animate-slide-in-left" style={{ animationDelay: '0.3s' }}>
@@ -89,8 +89,30 @@ const Hero = () => {
               </button>
             </div>
 
+            {/* Trust badges */}
+            <div className="flex flex-wrap items-center gap-6 pt-2 animate-slide-in-left" style={{ animationDelay: '0.4s' }}>
+              <div className="flex items-center gap-2 text-sm text-strivana-gray">
+                <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <span>Pre-vetted talent</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-strivana-gray">
+                <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <span>Same time zone</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-strivana-gray">
+                <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <span>No ongoing fees</span>
+              </div>
+            </div>
+
             {/* Stats */}
-            <div className="flex gap-8 pt-4 animate-slide-in-left" style={{ animationDelay: '0.4s' }}>
+            <div className="flex gap-8 pt-4 animate-slide-in-left" style={{ animationDelay: '0.5s' }}>
               <div>
                 <div className="text-3xl font-display font-bold text-strivana-purple">150+</div>
                 <div className="text-sm text-strivana-gray">Businesses Served</div>
@@ -100,8 +122,8 @@ const Hero = () => {
                 <div className="text-sm text-strivana-gray">Cost Savings</div>
               </div>
               <div>
-                <div className="text-3xl font-display font-bold text-strivana-purple">24h</div>
-                <div className="text-sm text-strivana-gray">Turnaround</div>
+                <div className="text-3xl font-display font-bold text-strivana-purple">48h</div>
+                <div className="text-sm text-strivana-gray">Time to Hire</div>
               </div>
             </div>
           </div>
@@ -130,6 +152,10 @@ const Hero = () => {
                   src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&h=1000&fit=crop&crop=face"
                   alt="Professional Virtual Assistant"
                   className="w-full max-w-md h-auto object-cover grayscale hover:grayscale-0 transition-all duration-500"
+                  loading="eager"
+                  onError={(e) => {
+                    e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="500" viewBox="0 0 400 500"%3E%3Crect fill="%23E0E7FF" width="400" height="500"/%3E%3Ctext fill="%236366F1" font-family="sans-serif" font-size="24" dy="10.5" font-weight="bold" x="50%25" y="50%25" text-anchor="middle"%3EVirtual Assistant%3C/text%3E%3C/svg%3E';
+                  }}
                 />
                 
                 {/* Decorative elements overlay */}

@@ -18,39 +18,39 @@ interface Service {
 
 const services: Service[] = [
   {
-    icon: Plane,
-    title: 'Travel Planning',
-    description: 'I will handle all aspects of your travel arrangements, from booking flights and hotels to organizing transportation and creating detailed itineraries. Enjoy stress-free travel with my expert planning.',
-    color: 'bg-blue-100 text-blue-600',
-  },
-  {
-    icon: Calendar,
-    title: 'Appointment Scheduling',
-    description: 'I will ensure your calendar stays organized and up-to-date. I will schedule, reschedule, and send reminders for all your appointments, ensuring you stay on track with your commitments effortlessly.',
-    color: 'bg-green-100 text-green-600',
-  },
-  {
-    icon: ShoppingBag,
-    title: 'Personal Shopping',
-    description: "Whether it's finding the perfect gift or handling your grocery shopping, I will make purchasing decisions easy and efficient. I will handle everything from research to purchase, ensuring you get exactly what you need.",
-    color: 'bg-pink-100 text-pink-600',
-  },
-  {
-    icon: Search,
-    title: 'Research Assistance',
-    description: 'Need information fast? I will conduct thorough research on any topic, providing you with accurate and detailed reports, summaries, and data analysis tailored to your needs.',
-    color: 'bg-purple-100 text-purple-600',
-  },
-  {
     icon: Mail,
-    title: 'Email Management',
-    description: 'Overwhelmed by emails? Let me manage your inbox. With all my effort, I will sort, prioritize, and respond to messages on your behalf, so you can focus on what matters most.',
-    color: 'bg-yellow-100 text-yellow-600',
+    title: 'Executive Assistance',
+    description: 'Inbox zero, calendar management, travel coordination, and administrative tasks. Your VA handles the details so you can focus on strategy and growth.',
+    color: 'bg-purple-100 text-purple-600',
   },
   {
     icon: Share2,
     title: 'Social Media Management',
-    description: 'I will maintain a vibrant social media presence for you. I will create, schedule, and manage your posts, engage with your followers, and analyze performance metrics to boost your online impact.',
+    description: 'Content creation, scheduling, community engagement, and analytics reporting. Build your brand presence across Instagram, LinkedIn, Facebook, and more.',
+    color: 'bg-blue-100 text-blue-600',
+  },
+  {
+    icon: Calendar,
+    title: 'Customer Support',
+    description: 'Email and chat support, ticket management, FAQ responses, and customer onboarding. Keep your customers happy with prompt, professional service.',
+    color: 'bg-green-100 text-green-600',
+  },
+  {
+    icon: Search,
+    title: 'Research & Data',
+    description: 'Market research, competitor analysis, lead generation, and data entry. Get accurate, organized information to make informed business decisions.',
+    color: 'bg-orange-100 text-orange-600',
+  },
+  {
+    icon: ShoppingBag,
+    title: 'E-commerce Support',
+    description: 'Product listing management, order processing, inventory tracking, and review monitoring. Scale your online store without the overhead.',
+    color: 'bg-pink-100 text-pink-600',
+  },
+  {
+    icon: Plane,
+    title: 'Specialized Skills',
+    description: 'Bookkeeping, graphic design, video editing, project management, and more. Access specialized talent matched to your specific needs.',
     color: 'bg-indigo-100 text-indigo-600',
   },
 ];
@@ -90,13 +90,17 @@ const Services = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-strivana-purple/10 rounded-full text-strivana-purple text-sm font-medium mb-6">
+            <span>What We Do</span>
+          </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-strivana-dark mb-4">
-            Discover Our{' '}
-            <span className="text-strivana-purple">Premium</span>{' '}
-            Services
+            Services That{' '}
+            <span className="text-strivana-purple">Scale</span>{' '}
+            Your Business
           </h2>
           <p className="text-lg text-strivana-gray max-w-2xl mx-auto">
-            From executive assistance to specialized support, we provide comprehensive virtual assistant services tailored to your business needs.
+            From day-to-day admin to specialized projects, our VAs handle the tasks 
+            that slow you down so you can focus on growth.
           </p>
         </div>
 
@@ -117,7 +121,7 @@ const Services = () => {
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
                 {/* Icon */}
-                <div className={`w-14 h-14 rounded-xl ${service.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                <div className={`w-14 h-14 rounded-xl ${service.color} flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
                   <Icon size={28} />
                 </div>
 
@@ -130,8 +134,14 @@ const Services = () => {
                 </p>
 
                 {/* Learn More Link */}
-                <button className="inline-flex items-center gap-2 text-sm font-medium text-strivana-purple opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
-                  Learn More
+                <button 
+                  onClick={() => {
+                    const element = document.querySelector('#contact');
+                    element?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="inline-flex items-center gap-2 text-sm font-medium text-strivana-purple opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0"
+                >
+                  Get this service
                   <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
                 </button>
 
@@ -145,7 +155,7 @@ const Services = () => {
         {/* Bottom CTA */}
         <div className="text-center mt-16">
           <p className="text-strivana-gray mb-4">
-            Need a custom solution? We can tailor our services to your specific requirements.
+            Need something specific? We will match you with a VA who has exactly the skills you need.
           </p>
           <button
             onClick={() => {
@@ -154,7 +164,7 @@ const Services = () => {
             }}
             className="inline-flex items-center gap-2 px-6 py-3 bg-strivana-dark text-white font-medium rounded-full hover:bg-strivana-purple transition-colors duration-300"
           >
-            Get a Custom Quote
+            Discuss Your Needs
             <ArrowRight size={18} />
           </button>
         </div>

@@ -29,7 +29,7 @@ const faqItems: FAQItem[] = [
   },
   {
     question: 'How much does the average Virtual Assistant cost?',
-    answer: 'Virtual Assistant hourly rates depend on the skills and experience they have. Entry Level: $6-$7 per hour. Highly Experienced: $8-$10 per hour. The hourly rate you agree to pay goes directly to your Virtual Assistant – we do not take any fees from their pay.',
+    answer: 'Our Starter plan VAs are $10-12/hour, Professional is $13-17/hour, and Executive is $18+/hour. These rates include everything – the VA\'s pay, our one-time placement fee is already factored in, and there are no hidden charges or ongoing fees. The VA receives 100% of their agreed hourly rate.',
   },
   {
     question: 'Do they work for me or for Strivana?',
@@ -162,8 +162,8 @@ const FAQ = () => {
                 </button>
 
                 <div
-                  className={`overflow-hidden transition-all duration-300 ${
-                    openIndex === index ? 'max-h-96' : 'max-h-0'
+                  className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                    openIndex === index ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
                   }`}
                 >
                   <div className="px-5 pb-5">

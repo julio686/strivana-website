@@ -12,6 +12,20 @@ const CTA = () => {
     message: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+
+  const validateEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const getFieldError = (field: string, value: string) => {
+    if (!touched[field]) return '';
+    if (field === 'email' && value && !validateEmail(value)) {
+      return 'Please enter a valid email address';
+    }
+    return '';
+  };
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -37,6 +51,13 @@ const CTA = () => {
     }));
   };
 
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setTouched((prev) => ({
+      ...prev,
+      [e.target.name]: true,
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -57,7 +78,10 @@ const CTA = () => {
       if (data.success === 'true' || data.success === true || response.ok) {
         toast.success('Thank you! We will get back to you within 24 hours.');
         setFormData({ name: '', email: '', company: '', message: '' });
+        setIsSubmitted(true);
         form.reset();
+        // Reset success state after 5 seconds
+        setTimeout(() => setIsSubmitted(false), 5000);
       } else {
         throw new Error('Form submission failed');
       }
@@ -89,13 +113,13 @@ const CTA = () => {
             </div>
 
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-strivana-dark mb-6">
-              Ready to Scale Your{' '}
-              <span className="text-strivana-purple">Business?</span>
+              Ready to Get Your Time{' '}
+              <span className="text-strivana-purple">Back?</span>
             </h2>
 
             <p className="text-lg text-strivana-gray mb-8 leading-relaxed">
-              Let us discuss how a dedicated virtual assistant can help you focus on what matters most. 
-              Schedule a free consultation and get matched with the perfect VA within 48 hours.
+              Tell us what you need help with. We will match you with 2-3 pre-vetted VAs within 48 hours. 
+              No commitment required to meet candidates.
             </p>
 
             {/* Illustration */}
@@ -178,6 +202,7 @@ const CTA = () => {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
+                    onBlur={handleBlur}
                     required
                     className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-strivana-purple focus:ring-2 focus:ring-strivana-purple/20 outline-none transition-all text-sm"
                     placeholder="John Smith"
@@ -194,15 +219,23 @@ const CTA = () => {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
+                    onBlur={handleBlur}
                     required
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-strivana-purple focus:ring-2 focus:ring-strivana-purple/20 outline-none transition-all text-sm"
+                    className={`w-full px-4 py-3 rounded-xl border focus:ring-2 outline-none transition-all text-sm ${
+                      getFieldError('email', formData.email)
+                        ? 'border-red-300 focus:border-red-400 focus:ring-red-100'
+                        : 'border-gray-200 focus:border-strivana-purple focus:ring-strivana-purple/20'
+                    }`}
                     placeholder="john@company.com"
                   />
+                  {getFieldError('email', formData.email) && (
+                    <p className="mt-1 text-sm text-red-500">{getFieldError('email', formData.email)}</p>
+                  )}
                 </div>
 
                 <div>
                   <label htmlFor="company" className="block text-sm font-medium text-strivana-dark mb-2">
-                    Company Name
+                    Company Name <span className="text-gray-400 font-normal">(optional)</span>
                   </label>
                   <input
                     type="text"
@@ -216,30 +249,48 @@ const CTA = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-strivana-dark mb-2">
-                    How Can We Help? *
-                  </label>
+                  <div className="flex items-center justify-between mb-2">
+                    <label htmlFor="message" className="block text-sm font-medium text-strivana-dark">
+                      How Can We Help? *
+                    </label>
+                    <span className={`text-xs ${formData.message.length > 500 ? 'text-red-500' : 'text-gray-400'}`}>
+                      {formData.message.length}/1000
+                    </span>
+                  </div>
                   <textarea
                     id="message"
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
+                    onBlur={handleBlur}
                     required
+                    maxLength={1000}
                     rows={4}
                     className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-strivana-purple focus:ring-2 focus:ring-strivana-purple/20 outline-none transition-all text-sm resize-none"
-                    placeholder="Tell us about your needs..."
+                    placeholder="Tell us what tasks you need help with, how many hours per week, and any specific skills required..."
                   />
                 </div>
 
                 <button
                   type="submit"
-                  disabled={isSubmitting}
-                  className="w-full py-4 px-6 bg-strivana-purple text-white font-medium rounded-xl hover:bg-strivana-purple-dark transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed hover:shadow-glow"
+                  disabled={isSubmitting || isSubmitted}
+                  className={`w-full py-4 px-6 font-medium rounded-xl transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed hover:shadow-glow ${
+                    isSubmitted 
+                      ? 'bg-green-500 hover:bg-green-600 text-white' 
+                      : 'bg-strivana-purple hover:bg-strivana-purple-dark text-white'
+                  }`}
                 >
                   {isSubmitting ? (
                     <>
                       <Loader2 size={20} className="animate-spin" />
                       Sending...
+                    </>
+                  ) : isSubmitted ? (
+                    <>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      Message Sent!
                     </>
                   ) : (
                     <>

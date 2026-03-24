@@ -102,12 +102,16 @@ const Pricing = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         {/* Section Header */}
         <div className={`text-center mb-16 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-strivana-purple/10 rounded-full text-strivana-purple text-sm font-medium mb-6">
+            <span>Simple Pricing</span>
+          </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-strivana-dark mb-4">
-            No Hidden Fees,{' '}
-            <span className="text-strivana-purple">Just Honest Rates</span>
+            One Flat Fee.{' '}
+            <span className="text-strivana-purple">No Hidden Costs.</span>
           </h2>
           <p className="text-lg text-strivana-gray max-w-2xl mx-auto">
-            Transparent pricing with no surprises. Choose the plan that fits your needs and scale as you grow.
+            You pay your VA directly. We charge a one-time placement fee only after you hire. 
+            No monthly fees, no markups, no surprises.
           </p>
         </div>
 

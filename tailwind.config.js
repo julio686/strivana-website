@@ -51,6 +51,7 @@ module.exports = {
           light: '#F3F4F6',
           yellow: '#FCD34D',
           blue: '#93C5FD',
+          'blue-light': '#DBEAFE',
           pink: '#F9A8D4',
         },
       },

@@ -3,7 +3,10 @@ import './App.css';
 import { Toaster } from 'sonner';
 import Navigation from './sections/Navigation';
 import Hero from './sections/Hero';
+import LogoBar from './sections/LogoBar';
 import Services from './sections/Services';
+import HowItWorks from './sections/HowItWorks';
+import WhyStrivana from './sections/WhyStrivana';
 import Pricing from './sections/Pricing';
 import FAQ from './sections/FAQ';
 import Testimonials from './sections/Testimonials';
@@ -11,6 +14,7 @@ import Careers from './sections/Careers';
 import CTA from './sections/CTA';
 import Footer from './sections/Footer';
 import ChatBot from './components/ChatBot';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   const [showChat, setShowChat] = useState(false);
@@ -41,7 +45,10 @@ function App() {
       <Navigation />
       <main>
         <Hero />
+        <LogoBar />
         <Services />
+        <HowItWorks />
+        <WhyStrivana />
         <Pricing />
         <FAQ />
         <Testimonials />
@@ -61,6 +68,7 @@ function App() {
       </button>
 
       {showChat && <ChatBot onClose={() => setShowChat(false)} />}
+      <ScrollToTop />
       <Toaster position="top-center" richColors />
     </div>
   );

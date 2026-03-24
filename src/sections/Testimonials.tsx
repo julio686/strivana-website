@@ -15,7 +15,7 @@ const testimonials: Testimonial[] = [
     name: 'Sarah Mitchell',
     role: 'CEO',
     company: 'TechStart Inc.',
-    content: 'I have been working with Strivana for over a year now, and I can not imagine running my business without their support. Their attention to detail and ability to manage my calendar, emails, and social media accounts has significantly increased my productivity. The professionalism and efficiency are unmatched!',
+    content: 'I was drowning in emails and calendar chaos before Strivana. My VA Maria took over inbox management and scheduling, and within a week I had hours back in my day. She even caught a conflicting meeting I had double-booked. Worth every penny.',
     avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face',
     rating: 5,
   },
@@ -23,7 +23,7 @@ const testimonials: Testimonial[] = [
     name: 'Michael Chen',
     role: 'Founder',
     company: 'GrowthLabs',
-    content: 'Strivana has been an incredible asset to my business. From handling customer service inquiries to managing our data entry and document creation, they have taken a huge burden off my shoulders. Their reliability and proactive approach have helped streamline our operations, allowing me to focus on growing the business.',
+    content: 'Hiring through Strivana saved us about $40K annually compared to a local hire. But honestly? The quality surprised me most. My VA handles customer support, data entry, and even helps with our newsletter. Fluent English, same time zone, zero issues.',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
     rating: 5,
   },
@@ -31,23 +31,23 @@ const testimonials: Testimonial[] = [
     name: 'Emily Rodriguez',
     role: 'Marketing Director',
     company: 'Brandify',
-    content: 'As a marketing director juggling multiple campaigns, I needed someone who could help me stay organized and manage my time effectively. Strivana has been a game-changer. They are always on top of deadlines and have a knack for anticipating my needs before I even realize them.',
+    content: 'We needed someone who could jump in fast during our product launch. Strivana matched us with a VA who had actual marketing experience. She managed our social calendar, coordinated with influencers, and kept everything on track. Game changer.',
     avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face',
     rating: 5,
   },
   {
     name: 'David Thompson',
-    role: 'Small Business Owner',
+    role: 'Owner',
     company: 'Thompson & Co.',
-    content: 'The cost savings alone have been tremendous - about 70% compared to hiring locally. But what really sets Strivana apart is the quality of their VAs. My assistant is university-educated, speaks perfect English, and understands US business culture. It is like having an in-house team member.',
+    content: 'I run a small law practice and was skeptical about remote help. My VA from Strivana manages client intake, schedules consultations, and handles billing follow-ups. She speaks better English than some local candidates I interviewed. Highly recommend.',
     avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face',
     rating: 5,
   },
   {
     name: 'Jennifer Park',
-    role: 'Entrepreneur',
+    role: 'Consultant',
     company: 'JP Consulting',
-    content: 'I was skeptical about outsourcing at first, but Strivana changed my mind completely. The onboarding process was smooth, and my VA hit the ground running. Within the first week, she had already organized my chaotic inbox and set up systems that I still use today.',
+    content: 'The placement process was super smooth. I interviewed two candidates, picked my favorite, and she started the next week. When I had questions about payment setup, Strivana\'s team walked me through everything. Great experience overall.',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face',
     rating: 5,
   },
@@ -59,6 +59,7 @@ const Testimonials = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -82,6 +83,11 @@ const Testimonials = () => {
       const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
       setCanScrollLeft(scrollLeft > 0);
       setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+      
+      // Calculate active index based on scroll position
+      const cardWidth = 400; // approximate card width + gap
+      const newIndex = Math.round(scrollLeft / cardWidth);
+      setActiveIndex(Math.min(newIndex, testimonials.length - 1));
     }
   };
 
@@ -217,11 +223,21 @@ const Testimonials = () => {
         {/* Scroll Indicator */}
         <div className={`flex justify-center gap-2 mt-6 transition-all duration-700 delay-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
           {testimonials.map((_, index) => (
-            <div
+            <button
               key={index}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                index === 0 ? 'bg-strivana-purple w-6' : 'bg-strivana-purple/30'
+              onClick={() => {
+                if (scrollRef.current) {
+                  const cardWidth = 416; // card width + gap
+                  scrollRef.current.scrollTo({
+                    left: index * cardWidth,
+                    behavior: 'smooth'
+                  });
+                }
+              }}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                index === activeIndex ? 'bg-strivana-purple w-6' : 'bg-strivana-purple/30 w-2 hover:bg-strivana-purple/50'
               }`}
+              aria-label={`Go to testimonial ${index + 1}`}
             />
           ))}
         </div>
