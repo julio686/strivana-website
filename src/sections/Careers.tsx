@@ -128,40 +128,64 @@ export default function Careers() {
         submitData.append('Resume', resumeFile, resumeFile.name)
       }
 
-      // Submit to FormSubmit.co
+      // Submit to FormSubmit.co AJAX endpoint
       const response = await fetch('https://formsubmit.co/ajax/julio@strivanallc.com', {
         method: 'POST',
         body: submitData,
+        headers: {
+          'Accept': 'application/json'
+        }
       })
 
-      if (response.ok) {
-        toast.success('Application submitted successfully! We will review within 3-5 business days.')
-        // Reset form
-        setFormData({ 
-          name: '', 
-          email: '', 
-          phone: '', 
-          position: '', 
-          country: '', 
-          englishLevel: '', 
-          experience: '', 
-          hearAboutUs: '', 
-          message: '' 
-        })
-        setResumeFile(null)
-        setResumeFileName('')
-        form.reset()
-        
-        // Redirect to thanks page after short delay
-        setTimeout(() => {
-          window.location.href = '/thanks-careers.html'
-        }, 1500)
-      } else {
-        throw new Error('Submission failed')
+      // Check if response is JSON
+      const contentType = response.headers.get('content-type')
+      if (contentType && contentType.includes('application/json')) {
+        const data = await response.json()
+        if (data.success === 'true' || data.success === true) {
+          toast.success('Application submitted successfully! We will review within 3-5 business days.')
+          setFormData({ 
+            name: '', 
+            email: '', 
+            phone: '', 
+            position: '', 
+            country: '', 
+            englishLevel: '', 
+            experience: '', 
+            hearAboutUs: '', 
+            message: '' 
+          })
+          setResumeFile(null)
+          setResumeFileName('')
+          form.reset()
+          
+          // Redirect to thanks page after short delay
+          setTimeout(() => {
+            window.location.href = '/thanks-careers.html'
+          }, 1500)
+          return
+        }
       }
+      
+      // If AJAX fails, try traditional form submission (more reliable for file uploads)
+      if (!response.ok) {
+        throw new Error('AJAX submission failed')
+      }
+      
+      // Fallback success
+      toast.success('Application submitted successfully!')
+      setTimeout(() => {
+        window.location.href = '/thanks-careers.html'
+      }, 1500)
+      
     } catch (error) {
       console.error('Submission error:', error)
-      toast.error('Error submitting application. Please try again or email info@strivanallc.com directly.')
+      // Fallback: Use traditional form submission
+      const form = formRef.current
+      if (form) {
+        form.action = 'https://formsubmit.co/julio@strivanallc.com'
+        form.method = 'POST'
+        form.submit()
+      }
     } finally {
       setIsSubmitting(false)
     }

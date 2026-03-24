@@ -63,31 +63,51 @@ const CTA = () => {
     setIsSubmitting(true);
 
     try {
-      // Using FormSubmit.co - sends directly to your email
-      // First submission requires email verification, then it works automatically
       const form = e.target as HTMLFormElement;
       const formDataObj = new FormData(form);
       
+      // Try FormSubmit.co AJAX endpoint first
       const response = await fetch('https://formsubmit.co/ajax/julio@strivanallc.com', {
         method: 'POST',
-        body: formDataObj
+        body: formDataObj,
+        headers: {
+          'Accept': 'application/json'
+        }
       });
 
-      const data = await response.json();
-
-      if (data.success === 'true' || data.success === true || response.ok) {
-        toast.success('Thank you! We will get back to you within 24 hours.');
-        setFormData({ name: '', email: '', company: '', message: '' });
-        setIsSubmitted(true);
-        form.reset();
-        // Reset success state after 5 seconds
-        setTimeout(() => setIsSubmitted(false), 5000);
-      } else {
-        throw new Error('Form submission failed');
+      // Check if response is JSON
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        const data = await response.json();
+        if (data.success === 'true' || data.success === true) {
+          toast.success('Thank you! We will get back to you within 24 hours.');
+          setFormData({ name: '', email: '', company: '', message: '' });
+          setIsSubmitted(true);
+          form.reset();
+          setTimeout(() => setIsSubmitted(false), 5000);
+          return;
+        }
       }
+      
+      // If AJAX fails, try traditional form submission
+      if (!response.ok) {
+        throw new Error('AJAX submission failed');
+      }
+      
+      // Fallback success
+      toast.success('Thank you! We will get back to you within 24 hours.');
+      setFormData({ name: '', email: '', company: '', message: '' });
+      setIsSubmitted(true);
+      form.reset();
+      setTimeout(() => setIsSubmitted(false), 5000);
+      
     } catch (error) {
       console.error('Form error:', error);
-      toast.error('Form submission failed. Please email us directly at info@strivanallc.com');
+      // Fallback: Use traditional form submission
+      const form = e.target as HTMLFormElement;
+      form.action = 'https://formsubmit.co/julio@strivanallc.com';
+      form.method = 'POST';
+      form.submit();
     } finally {
       setIsSubmitting(false);
     }
