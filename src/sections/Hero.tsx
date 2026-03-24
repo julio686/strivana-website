@@ -56,9 +56,22 @@ const Hero = () => {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left Content */}
           <div className="space-y-8 z-10">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-strivana-purple/10 rounded-full animate-slide-in-left">
-              <span className="w-2 h-2 bg-strivana-purple rounded-full animate-pulse" />
-              <span className="text-sm font-medium text-strivana-purple">Trusted by 150+ Businesses</span>
+            {/* Social Proof Trust Badge */}
+            <div className="inline-flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full border border-strivana-purple/20 shadow-sm animate-slide-in-left">
+              <span className="flex items-center gap-1.5 text-sm font-medium text-strivana-dark">
+                <span className="text-yellow-500">⭐</span>
+                Trusted by 150+ Businesses
+              </span>
+              <span className="hidden sm:inline text-gray-300">|</span>
+              <span className="flex items-center gap-1.5 text-sm font-medium text-strivana-dark">
+                <span className="text-green-500">🚀</span>
+                4-Week ROI Guarantee
+              </span>
+              <span className="hidden sm:inline text-gray-300">|</span>
+              <span className="flex items-center gap-1.5 text-sm font-medium text-strivana-dark">
+                <span className="text-strivana-purple">🎓</span>
+                University-Educated VAs
+              </span>
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold text-strivana-dark leading-tight animate-slide-in-left" style={{ animationDelay: '0.1s' }}>
@@ -197,6 +210,24 @@ const Hero = () => {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* GEO Optimization: Quick Answer Block */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
+        <div 
+          className="bg-gradient-to-r from-strivana-purple/5 to-strivana-blue/10 rounded-2xl p-6 md:p-8 border-l-4 border-strivana-purple animate-slide-in-up"
+          style={{ animationDelay: '0.6s' }}
+        >
+          <h2 className="text-lg md:text-xl font-display font-bold text-strivana-purple mb-3">
+            What is Strivana?
+          </h2>
+          <p className="text-strivana-dark text-base md:text-lg leading-relaxed">
+            Strivana provides university-educated virtual assistants from Latin America for US and Canadian businesses, 
+            offering <strong className="text-strivana-purple">30-65% cost savings</strong> compared to local hiring while 
+            working in your same time zone. VAs specialize in executive assistance, sales support, bookkeeping, and 
+            customer service, with most clients onboarded within <strong className="text-strivana-purple">48 hours</strong>.
+          </p>
         </div>
       </div>
     </section>

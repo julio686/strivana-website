@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You - Application Received | Strivana</title>
+    <meta name="description" content="Thank you for applying to Strivana. Your application has been received and will be reviewed within 3-5 business days.">
+    <link rel="icon" type="image/jpeg" href="/favicon.jpg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f5f7ff 0%, #ffffff 50%, #eef2ff 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            background: white;
+            padding: 3rem;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.15);
+        }
+        
+        .logo {
+            width: 120px;
+            height: auto;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+        }
+        
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            animation: scale-in 0.5s ease-out;
+        }
+        
+        .success-icon svg {
+            width: 40px;
+            height: 40px;
+            color: white;
+        }
+        
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e1b4b;
+            margin-bottom: 1rem;
+        }
+        
+        .highlight {
+            color: #6366f1;
+        }
+        
+        p {
+            color: #6b7280;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .timeline {
+            background: #f5f7ff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid #6366f1;
+        }
+        
+        .timeline-title {
+            font-weight: 600;
+            color: #1e1b4b;
+            margin-bottom: 0.5rem;
+        }
+        
+        .timeline-text {
+            color: #6b7280;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+        
+        .next-steps {
+            text-align: left;
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .next-steps h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            color: #1e1b4b;
+            margin-bottom: 1rem;
+        }
+        
+        .next-steps ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .next-steps li {
+            padding: 0.5rem 0;
+            color: #4b5563;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .next-steps li::before {
+            content: "✓";
+            color: #22c55e;
+            font-weight: bold;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+        
+        @keyframes scale-in {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .container {
+                padding: 2rem 1.5rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="/logo.jpg" alt="Strivana" class="logo">
+        
+        <div class="success-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+        </div>
+        
+        <h1>Application <span class="highlight">Received!</span></h1>
+        
+        <p>Thank you for your interest in joining Strivana. We've received your application and our team is excited to review it.</p>
+        
+        <div class="timeline">
+            <div class="timeline-title">⏱️ Review Timeline</div>
+            <p class="timeline-text">We review all submissions within <strong>3-5 business days</strong>. If your qualifications match our current needs, we'll contact you to schedule an interview.</p>
+        </div>
+        
+        <div class="next-steps">
+            <h3>What happens next?</h3>
+            <ul>
+                <li>Application review by our recruitment team</li>
+                <li>Skills assessment (if selected)</li>
+                <li>Video interview with our team</li>
+                <li>Reference and background verification</li>
+                <li>Offer and onboarding</li>
+            </ul>
+        </div>
+        
+        <p style="font-size: 0.95rem; color: #9ca3af;">Have questions? Email us at <a href="mailto:careers@strivanallc.com" style="color: #6366f1;">careers@strivanallc.com</a></p>
+        
+        <a href="/" class="btn">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+            </svg>
+            Return to Homepage
+        </a>
+    </div>
+</body>
+</html>

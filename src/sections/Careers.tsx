@@ -1,12 +1,11 @@
-import { useState, useEffect } from 'react'
-import { Briefcase, MapPin, DollarSign, Send, Globe, Clock, GraduationCap } from 'lucide-react'
+import { useState, useRef } from 'react'
+import { Briefcase, MapPin, DollarSign, Send, Globe, Clock, GraduationCap, Upload } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'sonner'
-import { supabase, isSupabaseConfigured, type JobListing, type JobApplication } from '@/lib/supabase'
 
 const benefits = [
   {
@@ -31,8 +30,8 @@ const benefits = [
   },
 ]
 
-// Fallback job listings if Supabase is not configured or fails
-const fallbackJobListings: JobListing[] = [
+// Fallback job listings
+const fallbackJobListings = [
   {
     id: 1,
     title: 'Executive Virtual Assistant',
@@ -45,41 +44,43 @@ const fallbackJobListings: JobListing[] = [
   },
   {
     id: 2,
-    title: 'Social Media Manager',
+    title: 'Sales Specialist',
     location: 'Remote (Latin America)',
     salary: '$10-14/hour',
     type: 'Full-Time',
-    description: 'Manage social media accounts for multiple clients. Create content calendars, schedule posts, engage with audiences, and provide analytics reports. Experience with Instagram, LinkedIn, and Facebook required.',
-    requirements: ['Content Creation', 'Analytics', 'English Fluent'],
+    description: 'Lead generation, CRM management, and sales support for US clients. Experience with outbound sales, LinkedIn outreach, and sales tools required.',
+    requirements: ['Sales Experience', 'CRM Knowledge', 'English Fluent'],
     is_active: true,
   },
   {
     id: 3,
-    title: 'Customer Success Manager',
+    title: 'Customer Service Representative',
     location: 'Remote (Latin America)',
-    salary: '$12-16/hour',
-    type: 'Full-Time',
-    description: 'Be the primary contact for Strivana clients. Onboard new customers, check in regularly, gather feedback, and ensure client satisfaction. Help match clients with the perfect VA.',
-    requirements: ['B2B Experience', 'Spanish + English', 'Sales exp'],
+    salary: '$8-11/hour',
+    type: 'Full-Time / Part-Time',
+    description: 'Provide excellent customer support via email, chat, and phone for US businesses. Handle inquiries, resolve issues, and maintain customer satisfaction.',
+    requirements: ['Customer Service Exp', 'Spanish + English', 'Communication'],
     is_active: true,
   },
   {
     id: 4,
-    title: 'Bookkeeping Virtual Assistant',
+    title: 'Project Manager',
     location: 'Remote (Latin America)',
-    salary: '$10-15/hour',
-    type: 'Part-Time / Full-Time',
-    description: 'Help US small businesses with QuickBooks, invoicing, expense tracking, and financial reporting. Accounting background or certification preferred.',
-    requirements: ['QuickBooks', 'Accounting', 'Detail-oriented'],
+    salary: '$12-16/hour',
+    type: 'Full-Time',
+    description: 'Coordinate projects, manage timelines, and ensure deliverables are met. Work with US clients to streamline operations and improve efficiency.',
+    requirements: ['PM Experience', 'Organizational Skills', 'English Fluent'],
     is_active: true,
   },
 ]
 
 export default function Careers() {
-  const [jobListings, setJobListings] = useState<JobListing[]>([])
-  const [isLoadingJobs, setIsLoadingJobs] = useState(true)
-  const [jobsError, setJobsError] = useState<string | null>(null)
-  const [usingFallback, setUsingFallback] = useState(false)
+  const [jobListings] = useState(fallbackJobListings)
+  const [isLoadingJobs] = useState(false)
+  const [resumeFile, setResumeFile] = useState<File | null>(null)
+  const [resumeFileName, setResumeFileName] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const formRef = useRef<HTMLFormElement>(null)
   
   const [formData, setFormData] = useState({
     name: '',
@@ -89,55 +90,9 @@ export default function Careers() {
     country: '',
     englishLevel: '',
     experience: '',
+    hearAboutUs: '',
     message: '',
   })
-  const [resumeFile, setResumeFile] = useState<File | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
-  // Fetch job listings from Supabase
-  useEffect(() => {
-    async function fetchJobs() {
-      try {
-        setIsLoadingJobs(true)
-        setJobsError(null)
-
-        // Check if Supabase is configured
-        if (!isSupabaseConfigured) {
-          console.warn('Supabase not configured, using fallback job listings')
-          setJobListings(fallbackJobListings)
-          setUsingFallback(true)
-          return
-        }
-
-        const { data, error } = await supabase
-          .from('job_listings')
-          .select('*')
-          .eq('is_active', true)
-          .order('created_at', { ascending: false })
-
-        if (error) {
-          console.error('Error fetching jobs:', error)
-          setJobsError('Failed to load job listings')
-          setJobListings(fallbackJobListings)
-          setUsingFallback(true)
-        } else if (data && data.length > 0) {
-          setJobListings(data)
-        } else {
-          // No jobs in database yet, use fallback
-          setJobListings(fallbackJobListings)
-          setUsingFallback(true)
-        }
-      } catch (err) {
-        console.error('Error:', err)
-        setJobListings(fallbackJobListings)
-        setUsingFallback(true)
-      } finally {
-        setIsLoadingJobs(false)
-      }
-    }
-
-    fetchJobs()
-  }, [])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -146,30 +101,14 @@ export default function Careers() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setResumeFile(e.target.files[0])
-    }
-  }
-
-  const uploadResume = async (file: File): Promise<string | null> => {
-    try {
-      const fileExt = file.name.split('.').pop()
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
-      const filePath = `resumes/${fileName}`
-
-      const { error: uploadError } = await supabase.storage
-        .from('applications')
-        .upload(filePath, file)
-
-      if (uploadError) {
-        console.error('Upload error:', uploadError)
-        return null
+      const file = e.target.files[0]
+      // Check file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('File size must be less than 5MB')
+        return
       }
-
-      const { data } = supabase.storage.from('applications').getPublicUrl(filePath)
-      return data.publicUrl
-    } catch (err) {
-      console.error('Error uploading resume:', err)
-      return null
+      setResumeFile(file)
+      setResumeFileName(file.name)
     }
   }
 
@@ -178,74 +117,51 @@ export default function Careers() {
     setIsSubmitting(true)
 
     try {
-      let resumeUrl: string | null = null
+      const form = formRef.current
+      if (!form) return
 
-      // Upload resume if Supabase is configured
-      if (resumeFile && isSupabaseConfigured) {
-        resumeUrl = await uploadResume(resumeFile)
+      // Create FormData object
+      const submitData = new FormData(form)
+      
+      // Append file if selected (FormSubmit.co handles file uploads)
+      if (resumeFile) {
+        submitData.append('Resume', resumeFile, resumeFile.name)
       }
 
-      // Prepare application data
-      const applicationData: JobApplication = {
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        position: formData.position,
-        country: formData.country,
-        english_level: formData.englishLevel,
-        experience: formData.experience,
-        message: formData.message,
-        resume_url: resumeUrl || undefined,
-      }
+      // Submit to FormSubmit.co
+      const response = await fetch('https://formsubmit.co/ajax/julio@strivanallc.com', {
+        method: 'POST',
+        body: submitData,
+      })
 
-      // Check if Supabase is configured
-      if (isSupabaseConfigured) {
-        // Submit to Supabase
-        const { error } = await supabase
-          .from('job_applications')
-          .insert([applicationData])
-
-        if (error) {
-          throw error
-        }
-
-        toast.success('Application submitted successfully! We will review within 3-5 days.')
-      } else {
-        // Fallback: submit via FormSubmit.co
-        const submitData = new FormData()
-        submitData.append('_subject', `VA Application - ${formData.position || 'General Application'}`)
-        submitData.append('_cc', 'careers@strivanallc.com')
-        submitData.append('_autoresponse', 'Thank you for applying to Strivana! We have received your application and will review it within 3-5 business days.')
-        submitData.append('name', formData.name)
-        submitData.append('email', formData.email)
-        submitData.append('phone', formData.phone)
-        submitData.append('position', formData.position)
-        submitData.append('country', formData.country)
-        submitData.append('englishLevel', formData.englishLevel)
-        submitData.append('experience', formData.experience)
-        submitData.append('message', formData.message)
-        if (resumeFile) {
-          submitData.append('resume', resumeFile)
-        }
-
-        const response = await fetch('https://formsubmit.co/ajax/careers@strivanallc.com', {
-          method: 'POST',
-          body: submitData,
+      if (response.ok) {
+        toast.success('Application submitted successfully! We will review within 3-5 business days.')
+        // Reset form
+        setFormData({ 
+          name: '', 
+          email: '', 
+          phone: '', 
+          position: '', 
+          country: '', 
+          englishLevel: '', 
+          experience: '', 
+          hearAboutUs: '', 
+          message: '' 
         })
-
-        if (!response.ok) {
-          throw new Error('Submission failed')
-        }
-
-        toast.success('Application submitted! We will review within 3-5 days.')
+        setResumeFile(null)
+        setResumeFileName('')
+        form.reset()
+        
+        // Redirect to thanks page after short delay
+        setTimeout(() => {
+          window.location.href = '/thanks-careers.html'
+        }, 1500)
+      } else {
+        throw new Error('Submission failed')
       }
-
-      // Reset form
-      setFormData({ name: '', email: '', phone: '', position: '', country: '', englishLevel: '', experience: '', message: '' })
-      setResumeFile(null)
     } catch (error) {
       console.error('Submission error:', error)
-      toast.error('Error submitting application. Please try again or email careers@strivanallc.com directly.')
+      toast.error('Error submitting application. Please try again or email info@strivanallc.com directly.')
     } finally {
       setIsSubmitting(false)
     }
@@ -276,11 +192,6 @@ export default function Careers() {
             Join 150+ talented professionals from Latin America. Work remotely with US clients, 
             earn competitive USD wages, and grow your career.
           </p>
-          {usingFallback && (
-            <p className="text-xs text-amber-600 mt-2">
-              * Using default listings. Connect Supabase to see live job postings.
-            </p>
-          )}
         </div>
 
         {/* Benefits */}
@@ -307,10 +218,6 @@ export default function Careers() {
             {isLoadingJobs ? (
               <div className="flex items-center justify-center p-12">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-strivana-purple"></div>
-              </div>
-            ) : jobsError ? (
-              <div className="p-6 bg-red-50 rounded-xl text-red-600">
-                {jobsError}. Showing default listings.
               </div>
             ) : (
               jobListings.map((job) => (
@@ -369,8 +276,21 @@ export default function Careers() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
+                <form 
+                  ref={formRef}
+                  onSubmit={handleSubmit} 
+                  className="space-y-4"
+                  encType="multipart/form-data"
+                >
+                  {/* Hidden FormSubmit.co configuration */}
+                  <input type="hidden" name="_captcha" value="false" />
+                  <input type="hidden" name="_next" value="https://strivanallc.com/thanks-careers.html" />
+                  <input type="hidden" name="_template" value="table" />
+                  <input type="hidden" name="_subject" value="New Career Application - Strivana" />
+                  <input type="hidden" name="_cc" value="george@strivanallc.com" />
+                  <input type="hidden" name="_autoresponse" value="Thank you for applying to Strivana! We have received your application and will review it within 3-5 business days." />
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="career-name">Full Name *</Label>
                       <Input
@@ -396,15 +316,16 @@ export default function Careers() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="career-phone">Phone / WhatsApp</Label>
+                      <Label htmlFor="career-phone">Phone / WhatsApp *</Label>
                       <Input
                         id="career-phone"
                         name="phone"
                         type="tel"
                         value={formData.phone}
                         onChange={handleInputChange}
+                        required
                         placeholder="+52 1 55 1234 5678"
                       />
                     </div>
@@ -421,9 +342,9 @@ export default function Careers() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="career-position">Position *</Label>
+                      <Label htmlFor="career-position">Position Applying For *</Label>
                       <select
                         id="career-position"
                         name="position"
@@ -433,10 +354,11 @@ export default function Careers() {
                         className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm"
                       >
                         <option value="">Select position...</option>
-                        {jobListings.map((job) => (
-                          <option key={job.id} value={job.title}>{job.title}</option>
-                        ))}
-                        <option value="General Application">General Application</option>
+                        <option value="Executive Assistant">Executive Assistant</option>
+                        <option value="Sales Specialist">Sales Specialist</option>
+                        <option value="Customer Service">Customer Service</option>
+                        <option value="Project Manager">Project Manager</option>
+                        <option value="Other">Other</option>
                       </select>
                     </div>
                     <div>
@@ -457,52 +379,81 @@ export default function Careers() {
                     </div>
                   </div>
 
-                  <div>
-                    <Label htmlFor="career-experience">Years of Experience *</Label>
-                    <select
-                      id="career-experience"
-                      name="experience"
-                      value={formData.experience}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm"
-                    >
-                      <option value="">Select experience...</option>
-                      <option value="0-1 years">Less than 1 year</option>
-                      <option value="1-3 years">1-3 years</option>
-                      <option value="3-5 years">3-5 years</option>
-                      <option value="5+ years">5+ years</option>
-                    </select>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="career-experience">Years of Experience *</Label>
+                      <select
+                        id="career-experience"
+                        name="experience"
+                        value={formData.experience}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm"
+                      >
+                        <option value="">Select experience...</option>
+                        <option value="0-1 years">Less than 1 year</option>
+                        <option value="1-3 years">1-3 years</option>
+                        <option value="3-5 years">3-5 years</option>
+                        <option value="5+ years">5+ years</option>
+                      </select>
+                    </div>
+                    <div>
+                      <Label htmlFor="career-hear-about">How did you hear about us?</Label>
+                      <select
+                        id="career-hear-about"
+                        name="hearAboutUs"
+                        value={formData.hearAboutUs}
+                        onChange={handleInputChange}
+                        className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm"
+                      >
+                        <option value="">Select...</option>
+                        <option value="LinkedIn">LinkedIn</option>
+                        <option value="Google">Google</option>
+                        <option value="Referral">Referral</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
                   </div>
 
                   <div>
-                    <Label htmlFor="career-message">Tell us about yourself</Label>
+                    <Label htmlFor="career-resume">Resume/CV *</Label>
+                    <div className="mt-1">
+                      <div className="relative">
+                        <Input
+                          id="career-resume"
+                          name="resume"
+                          type="file"
+                          accept=".pdf,.doc,.docx"
+                          onChange={handleFileChange}
+                          required
+                          className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-strivana-purple file:text-white hover:file:bg-strivana-purple-dark cursor-pointer"
+                        />
+                        <Upload className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                      </div>
+                      <p className="text-xs text-strivana-gray mt-1">
+                        PDF, DOC, or DOCX (max 5MB)
+                      </p>
+                      {resumeFileName && (
+                        <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
+                          Selected: {resumeFileName}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="career-message">Cover Letter / Message (Optional)</Label>
                     <Textarea
                       id="career-message"
                       name="message"
                       value={formData.message}
                       onChange={handleInputChange}
                       rows={3}
-                      placeholder="Your background, skills, and why you want to join Strivana..."
+                      placeholder="Tell us about yourself, your background, skills, and why you want to join Strivana..."
                     />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="career-resume">Resume/CV *</Label>
-                    <div className="mt-1">
-                      <Input
-                        id="career-resume"
-                        name="resume"
-                        type="file"
-                        accept=".pdf,.doc,.docx"
-                        onChange={handleFileChange}
-                        required
-                        className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-strivana-purple file:text-white hover:file:bg-strivana-purple-dark"
-                      />
-                      <p className="text-xs text-strivana-gray mt-1">
-                        PDF, DOC, or DOCX (max 5MB)
-                      </p>
-                    </div>
                   </div>
 
                   <Button
