@@ -1,7 +1,10 @@
-import { createClient, SupabaseClient } from '@supabase/supabase-js'
+// Supabase client configuration
+// NOTE: Supabase integration is disabled. The site uses fallback/mock data.
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+// Check if Supabase is configured
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined
+export const isSupabaseConfigured = !!(supabaseUrl?.trim() && supabaseAnonKey?.trim())
 
 // Create a mock query builder that supports chaining and returns proper promise
 class MockQueryBuilder {
@@ -17,8 +20,8 @@ class MockQueryBuilder {
   }
 }
 
-// Create a mock client if env vars are not set
-const createMockClient = (): any => ({
+// Mock Supabase client that matches the SupabaseClient interface
+const mockClient = {
   from: () => new MockQueryBuilder(),
   storage: {
     from: () => ({
@@ -26,11 +29,11 @@ const createMockClient = (): any => ({
       getPublicUrl: () => ({ data: { publicUrl: '' } }),
     }),
   },
-})
+}
 
-export const supabase: SupabaseClient | any = (supabaseUrl && supabaseAnonKey) 
-  ? createClient(supabaseUrl, supabaseAnonKey)
-  : createMockClient()
+// Export the mock client as the supabase client
+// This prevents the "supabaseUrl is required" error
+export const supabase = mockClient as any
 
 // Job listing type matching Supabase schema
 export interface JobListing {
