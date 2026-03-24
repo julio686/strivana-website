@@ -18,7 +18,7 @@ import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   const [showChat, setShowChat] = useState(false);
-  console.log('Build timestamp: 2026-03-24-v3-SupabaseFix');
+  console.log('Build timestamp: 2026-03-24-v4-NoSupabase');
 
   useEffect(() => {
     const observerOptions = {
