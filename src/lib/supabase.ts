@@ -1,12 +1,26 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co'
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder'
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-// Only create client if proper values are provided
-export const supabase = supabaseUrl !== 'https://placeholder.supabase.co' 
+// Create a mock client if env vars are not set
+const createMockClient = () => ({
+  from: () => ({
+    select: () => ({ data: null, error: null }),
+    insert: () => ({ data: null, error: null }),
+  }),
+  storage: {
+    from: () => ({
+      upload: () => ({ data: null, error: null }),
+      getPublicUrl: () => ({ data: { publicUrl: '' } }),
+    }),
+  },
+})
+
+// @ts-ignore
+export const supabase = (supabaseUrl && supabaseAnonKey) 
   ? createClient(supabaseUrl, supabaseAnonKey)
-  : null as any
+  : createMockClient()
 
 // Job listing type matching Supabase schema
 export interface JobListing {
