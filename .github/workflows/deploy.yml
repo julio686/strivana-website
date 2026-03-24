@@ -3,8 +3,7 @@ name: Deploy to Cloudflare Pages
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -32,19 +31,7 @@ jobs:
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          apiToken: cfut_5eoK1JYJvX90LQsNhSxDCOv6PzO8FEI09UYG9RjH3c8024a4
+          accountId: 4842b07d5ba6edab24a8af323451b535
           command: pages deploy dist --project-name=strivana-website
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Comment Deployment URL
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '🚀 Deployed to Cloudflare Pages!'
-            })

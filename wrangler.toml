@@ -1,0 +1,4 @@
+name = "strivana-website"
+account_id = "4842b07d5ba6edab24a8af323451b535"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-03-24"
