@@ -14,6 +14,22 @@ const Navigation = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    const element = document.querySelector(href);
+    if (element) {
+      const offset = 80; // Offset for fixed header
+      const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+      const offsetPosition = elementPosition - offset;
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+    setIsMobileMenuOpen(false);
+  };
+
   const navLinks = [
     { name: 'Services', href: '#services' },
     { name: 'Pricing', href: '#pricing' },
@@ -22,14 +38,6 @@ const Navigation = () => {
     { name: 'Careers', href: '#careers' },
     { name: 'Contact', href: '#contact' },
   ];
-
-  const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-    setIsMobileMenuOpen(false);
-  };
 
   return (
     <header
@@ -67,22 +75,24 @@ const Navigation = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
-              <button
+              <a
                 key={link.name}
-                onClick={() => scrollToSection(link.href)}
-                className="text-sm font-medium text-strivana-gray hover:text-strivana-purple transition-colors duration-200 relative group"
+                href={link.href}
+                onClick={(e) => handleNavClick(e, link.href)}
+                className="text-sm font-medium text-strivana-gray hover:text-strivana-purple transition-colors duration-200 relative group cursor-pointer"
               >
                 {link.name}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-strivana-purple transition-all duration-300 group-hover:w-full" />
-              </button>
+              </a>
             ))}
           </div>
 
           {/* CTA Button */}
           <div className="hidden md:block">
-            <button
-              onClick={() => scrollToSection('#contact')}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-strivana-purple text-white text-sm font-medium rounded-full hover:bg-strivana-purple-dark transition-all duration-300 hover:shadow-glow"
+            <a
+              href="#contact"
+              onClick={(e) => handleNavClick(e, '#contact')}
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-strivana-purple text-white text-sm font-medium rounded-full hover:bg-strivana-purple-dark transition-all duration-300 hover:shadow-glow cursor-pointer"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
@@ -91,7 +101,7 @@ const Navigation = () => {
                 <line x1="3" y1="10" x2="21" y2="10"/>
               </svg>
               Schedule a Consultation
-            </button>
+            </a>
           </div>
 
           {/* Mobile Menu Button */}
@@ -109,20 +119,22 @@ const Navigation = () => {
           <div className="md:hidden mt-4 pb-4 border-t border-gray-100 animate-slide-up">
             <div className="flex flex-col gap-2 pt-4">
               {navLinks.map((link) => (
-                <button
+                <a
                   key={link.name}
-                  onClick={() => scrollToSection(link.href)}
-                  className="text-left px-4 py-3 text-strivana-gray hover:text-strivana-purple hover:bg-strivana-purple-light rounded-lg transition-colors"
+                  href={link.href}
+                  onClick={(e) => handleNavClick(e, link.href)}
+                  className="text-left px-4 py-3 text-strivana-gray hover:text-strivana-purple hover:bg-strivana-purple-light rounded-lg transition-colors cursor-pointer"
                 >
                   {link.name}
-                </button>
+                </a>
               ))}
-              <button
-                onClick={() => scrollToSection('#contact')}
-                className="mt-2 mx-4 px-5 py-3 bg-strivana-purple text-white text-center font-medium rounded-full hover:bg-strivana-purple-dark transition-colors"
+              <a
+                href="#contact"
+                onClick={(e) => handleNavClick(e, '#contact')}
+                className="mt-2 mx-4 px-5 py-3 bg-strivana-purple text-white text-center font-medium rounded-full hover:bg-strivana-purple-dark transition-colors cursor-pointer"
               >
                 Schedule a Consultation
-              </button>
+              </a>
             </div>
           </div>
         )}
