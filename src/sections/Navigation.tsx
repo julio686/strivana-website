@@ -76,7 +76,7 @@ const Navigation = () => {
             <img 
               src="/logo.jpg" 
               alt="Strivana" 
-              className="h-20 sm:h-24 md:h-28 w-auto transition-transform duration-300 group-hover:scale-105 object-contain"
+              className="h-28 sm:h-32 md:h-40 w-auto transition-transform duration-300 group-hover:scale-105 object-contain"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
                 const fallback = document.createElement('span');
