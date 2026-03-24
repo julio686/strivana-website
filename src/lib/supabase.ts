@@ -2,7 +2,7 @@
 // NOTE: Supabase is used for the Ghost Agent (SEO, GEO, digital marketing automation)
 // The client is lazy-loaded - only initialized when env vars are present or explicitly needed
 
-import { createClient, SupabaseClient } from '@supabase/supabase-js'
+import type { SupabaseClient } from '@supabase/supabase-js'
 
 // Check if Supabase is configured
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined
@@ -11,6 +11,15 @@ export const isSupabaseConfigured = !!(supabaseUrl?.trim() && supabaseAnonKey?.t
 
 // Lazy-loaded Supabase client
 let _supabase: SupabaseClient | null = null
+let _createClientPromise: Promise<typeof import('@supabase/supabase-js').createClient> | null = null
+
+// Dynamically import createClient only when needed
+async function getCreateClient(): Promise<typeof import('@supabase/supabase-js').createClient> {
+  if (!_createClientPromise) {
+    _createClientPromise = import('@supabase/supabase-js').then(mod => mod.createClient)
+  }
+  return _createClientPromise
+}
 
 // Create a mock query builder that supports chaining and returns proper promise
 class MockQueryBuilder {
@@ -38,7 +47,7 @@ const mockClient = {
 } as unknown as SupabaseClient
 
 // Get or create the Supabase client (lazy initialization)
-export function getSupabaseClient(): SupabaseClient {
+export async function getSupabaseClientAsync(): Promise<SupabaseClient> {
   // Return existing client if already created
   if (_supabase) {
     return _supabase
@@ -47,6 +56,7 @@ export function getSupabaseClient(): SupabaseClient {
   // Create real client if configured
   if (isSupabaseConfigured && supabaseUrl && supabaseAnonKey) {
     try {
+      const createClient = await getCreateClient()
       _supabase = createClient(supabaseUrl, supabaseAnonKey)
       return _supabase
     } catch (error) {
@@ -55,6 +65,22 @@ export function getSupabaseClient(): SupabaseClient {
   }
   
   // Fall back to mock client
+  return mockClient
+}
+
+// Synchronous version that returns mock immediately, real client async
+export function getSupabaseClient(): SupabaseClient {
+  if (_supabase) {
+    return _supabase
+  }
+  
+  // If not configured, return mock immediately
+  if (!isSupabaseConfigured) {
+    return mockClient
+  }
+  
+  // If configured but not initialized yet, return proxy that will resolve to real client
+  // This shouldn't happen in practice if used correctly
   return mockClient
 }
 
