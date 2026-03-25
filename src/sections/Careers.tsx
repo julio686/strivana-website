@@ -1,11 +1,7 @@
 import { useState, useRef } from 'react'
-import { Briefcase, MapPin, DollarSign, Send, Globe, Clock, GraduationCap, Upload } from 'lucide-react'
+import { Briefcase, MapPin, DollarSign, Globe, Clock, GraduationCap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { toast } from 'sonner'
 
 const benefits = [
   {
@@ -76,115 +72,9 @@ const fallbackJobListings = [
 
 export default function Careers() {
   const [jobListings] = useState(fallbackJobListings)
-  const [resumeFile, setResumeFile] = useState<File | null>(null)
-  const [resumeFileName, setResumeFileName] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const formRef = useRef<HTMLFormElement>(null)
+  const formRef = useRef<HTMLDivElement>(null)
   
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    position: '',
-    country: '',
-    englishLevel: '',
-    experience: '',
-    hearAboutUs: '',
-    message: '',
-  })
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
-  }
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0]
-      // Check file size (5MB limit for FormSubmit)
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error('File size must be less than 5MB')
-        return
-      }
-      setResumeFile(file)
-      setResumeFileName(file.name)
-    }
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-
-    try {
-      const form = formRef.current
-      if (!form) return
-
-      // Create FormData object
-      const submitData = new FormData(form)
-      
-      // Append file if selected
-      if (resumeFile) {
-        submitData.append('resume', resumeFile, resumeFile.name)
-      }
-
-      // Submit to FormSubmit.co using fetch
-      const response = await fetch('https://formsubmit.co/ajax/julio@strivanallc.com', {
-        method: 'POST',
-        body: submitData,
-      })
-
-      // FormSubmit.co returns JSON on success
-      if (response.ok) {
-        const data = await response.json()
-        if (data.success === 'true' || data.success === true) {
-          toast.success('Application submitted successfully! We will review within 3-5 business days.')
-          // Reset form
-          setFormData({ 
-            name: '', 
-            email: '', 
-            phone: '', 
-            position: '', 
-            country: '', 
-            englishLevel: '', 
-            experience: '', 
-            hearAboutUs: '', 
-            message: '' 
-          })
-          setResumeFile(null)
-          setResumeFileName('')
-          form.reset()
-          
-          // Redirect to thanks page after short delay
-          setTimeout(() => {
-            window.location.href = '/thanks-careers.html'
-          }, 1500)
-          return
-        }
-      }
-      
-      // If we get here, the AJAX submission failed
-      // Fall back to traditional form submission
-      throw new Error('AJAX submission failed')
-      
-    } catch (error) {
-      console.error('Submission error:', error)
-      // Fallback: Use traditional form submission
-      const form = formRef.current
-      if (form) {
-        form.action = 'https://formsubmit.co/julio@strivanallc.com'
-        form.method = 'POST'
-        form.enctype = 'multipart/form-data'
-        // Remove onSubmit handler to prevent infinite loop
-        form.onsubmit = null
-        form.submit()
-      }
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
-  const handleApplyClick = (jobTitle: string) => {
-    setFormData(prev => ({ ...prev, position: jobTitle }))
+  const handleApplyClick = () => {
     const formElement = document.getElementById('apply-form')
     if (formElement) {
       formElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
@@ -264,7 +154,7 @@ export default function Careers() {
                     ))}
                   </div>
                   <Button
-                    onClick={() => handleApplyClick(job.title)}
+                    onClick={handleApplyClick}
                     variant="outline"
                     size="sm"
                     className="border-strivana-purple text-strivana-purple hover:bg-strivana-purple hover:text-white"
@@ -276,8 +166,8 @@ export default function Careers() {
             ))}
           </div>
 
-          {/* Application Form */}
-          <div id="apply-form">
+          {/* GHL Recruitment Form */}
+          <div id="apply-form" ref={formRef}>
             <Card className="border border-gray-100 shadow-lg sticky top-24">
               <CardHeader>
                 <CardTitle className="text-2xl text-strivana-dark">Apply Now</CardTitle>
@@ -286,203 +176,34 @@ export default function Careers() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form 
-                  ref={formRef}
-                  onSubmit={handleSubmit} 
-                  className="space-y-4"
-                  encType="multipart/form-data"
-                >
-                  {/* Hidden FormSubmit.co configuration */}
-                  <input type="hidden" name="_captcha" value="false" />
-                  <input type="hidden" name="_next" value="https://strivanallc.com/thanks-careers.html" />
-                  <input type="hidden" name="_template" value="table" />
-                  <input type="hidden" name="_subject" value="New Career Application - Strivana" />
-                  <input type="hidden" name="_cc" value="george@strivanallc.com" />
-                  <input type="hidden" name="_autoresponse" value="Thank you for applying to Strivana! We have received your application and will review it within 3-5 business days." />
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="career-name">Full Name *</Label>
-                      <Input
-                        id="career-name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleInputChange}
-                        required
-                        placeholder="Maria Garcia"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="career-email">Email *</Label>
-                      <Input
-                        id="career-email"
-                        name="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        required
-                        placeholder="maria@email.com"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="career-phone">Phone / WhatsApp *</Label>
-                      <Input
-                        id="career-phone"
-                        name="phone"
-                        type="tel"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        required
-                        placeholder="+52 1 55 1234 5678"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="career-country">Country *</Label>
-                      <Input
-                        id="career-country"
-                        name="country"
-                        value={formData.country}
-                        onChange={handleInputChange}
-                        required
-                        placeholder="Mexico, Colombia, Argentina..."
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="career-position">Position Applying For *</Label>
-                      <select
-                        id="career-position"
-                        name="position"
-                        value={formData.position}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm"
-                      >
-                        <option value="">Select position...</option>
-                        <option value="Executive Assistant">Executive Assistant</option>
-                        <option value="Sales Specialist">Sales Specialist</option>
-                        <option value="Customer Service">Customer Service</option>
-                        <option value="Project Manager">Project Manager</option>
-                        <option value="Other">Other</option>
-                      </select>
-                    </div>
-                    <div>
-                      <Label htmlFor="career-english">English Level *</Label>
-                      <select
-                        id="career-english"
-                        name="englishLevel"
-                        value={formData.englishLevel}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm"
-                      >
-                        <option value="">Select level...</option>
-                        <option value="Fluent">Fluent - Minimal accent</option>
-                        <option value="Advanced">Advanced - Light accent</option>
-                        <option value="Upper Intermediate">Upper Intermediate</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="career-experience">Years of Experience *</Label>
-                      <select
-                        id="career-experience"
-                        name="experience"
-                        value={formData.experience}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm"
-                      >
-                        <option value="">Select experience...</option>
-                        <option value="0-1 years">Less than 1 year</option>
-                        <option value="1-3 years">1-3 years</option>
-                        <option value="3-5 years">3-5 years</option>
-                        <option value="5+ years">5+ years</option>
-                      </select>
-                    </div>
-                    <div>
-                      <Label htmlFor="career-hear-about">How did you hear about us?</Label>
-                      <select
-                        id="career-hear-about"
-                        name="hearAboutUs"
-                        value={formData.hearAboutUs}
-                        onChange={handleInputChange}
-                        className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm"
-                      >
-                        <option value="">Select...</option>
-                        <option value="LinkedIn">LinkedIn</option>
-                        <option value="Google">Google</option>
-                        <option value="Referral">Referral</option>
-                        <option value="Other">Other</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="career-resume">Resume/CV *</Label>
-                    <div className="mt-1">
-                      <div className="relative">
-                        <Input
-                          id="career-resume"
-                          name="resume"
-                          type="file"
-                          accept=".pdf,.doc,.docx"
-                          onChange={handleFileChange}
-                          required
-                          className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-strivana-purple file:text-white hover:file:bg-strivana-purple-dark cursor-pointer"
-                        />
-                        <Upload className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
-                      </div>
-                      <p className="text-xs text-strivana-gray mt-1">
-                        PDF, DOC, or DOCX (max 5MB)
-                      </p>
-                      {resumeFileName && (
-                        <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
-                          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                          </svg>
-                          Selected: {resumeFileName}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="career-message">Cover Letter / Message (Optional)</Label>
-                    <Textarea
-                      id="career-message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleInputChange}
-                      rows={3}
-                      placeholder="Tell us about yourself, your background, skills, and why you want to join Strivana..."
-                    />
-                  </div>
-
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full bg-strivana-purple hover:bg-strivana-purple-dark text-white"
-                  >
-                    {isSubmitting ? 'Submitting...' : <><Send className="mr-2 h-4 w-4" />Submit Application</>}
-                  </Button>
-
-                  <p className="text-xs text-strivana-gray text-center">
-                    We respect your privacy. Your information is secure and will never be shared.
-                  </p>
-                </form>
+                {/* GHL Recruitment Form Iframe */}
+                <div className="w-full" style={{ minHeight: '877px' }}>
+                  <iframe
+                    src="https://api.leadconnectorhq.com/widget/form/rNYcdaht1k5ihTMLYAph"
+                    style={{ width: '100%', height: '100%', border: 'none', borderRadius: '3px' }}
+                    id="inline-rNYcdaht1k5ihTMLYAph"
+                    data-layout="{'id':'INLINE'}"
+                    data-trigger-type="alwaysShow"
+                    data-trigger-value=""
+                    data-activation-type="alwaysActivated"
+                    data-activation-value=""
+                    data-deactivation-type="neverDeactivate"
+                    data-deactivation-value=""
+                    data-form-name="Recruitment"
+                    data-height="877"
+                    data-layout-iframe-id="inline-rNYcdaht1k5ihTMLYAph"
+                    data-form-id="rNYcdaht1k5ihTMLYAph"
+                    title="Recruitment"
+                  />
+                </div>
               </CardContent>
             </Card>
           </div>
         </div>
       </div>
+
+      {/* GHL Form Embed Script */}
+      <script src="https://link.msgsndr.com/js/form_embed.js" />
     </section>
   )
 }

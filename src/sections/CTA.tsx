@@ -1,31 +1,9 @@
 import { useRef, useEffect, useState } from 'react';
-import { Mail, MapPin, Send, Loader2, MessageCircle } from 'lucide-react';
-import { toast } from 'sonner';
+import { Mail, MapPin, MessageCircle } from 'lucide-react';
 
 const CTA = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    company: '',
-    message: '',
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [touched, setTouched] = useState<Record<string, boolean>>({});
-
-  const validateEmail = (email: string) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  };
-
-  const getFieldError = (field: string, value: string) => {
-    if (!touched[field]) return '';
-    if (field === 'email' && value && !validateEmail(value)) {
-      return 'Please enter a valid email address';
-    }
-    return '';
-  };
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -43,69 +21,6 @@ const CTA = () => {
 
     return () => observer.disconnect();
   }, []);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setTouched((prev) => ({
-      ...prev,
-      [e.target.name]: true,
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
-    
-    if (!accessKey || accessKey === 'your-web3forms-access-key-here') {
-      toast.error('Web3Forms access key not configured. Please email us directly at info@strivanallc.com');
-      setIsSubmitting(false);
-      return;
-    }
-
-    try {
-      const response = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          access_key: accessKey,
-          name: formData.name,
-          email: formData.email,
-          company: formData.company,
-          message: formData.message,
-          subject: `New Contact Form from ${formData.name || 'Website Visitor'}`,
-          from_name: 'Strivana Website',
-          reply_to: formData.email,
-        })
-      });
-
-      const data = await response.json();
-      
-      if (response.status === 200 && data.success) {
-        toast.success('Thank you! We will get back to you within 24 hours.');
-        setFormData({ name: '', email: '', company: '', message: '' });
-        setIsSubmitted(true);
-        setTimeout(() => setIsSubmitted(false), 5000);
-      } else {
-        throw new Error(data.message || 'Submission failed');
-      }
-    } catch (error) {
-      console.error('Form error:', error);
-      toast.error('Form submission failed. Please email us directly at info@strivanallc.com');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   return (
     <section
@@ -185,140 +100,47 @@ const CTA = () => {
             </div>
           </div>
 
-          {/* Right Column - Form */}
+          {/* Right Column - GHL Lead Form */}
           <div
             className={`transition-all duration-700 delay-200 ${
               isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
             }`}
           >
-            <div className="bg-white rounded-3xl p-8 sm:p-10 shadow-soft-lg">
+            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-soft-lg">
               <h3 className="text-2xl font-display font-bold text-strivana-dark mb-2">
                 Send Us a Message
               </h3>
-              <p className="text-strivana-gray text-sm mb-8">
+              <p className="text-strivana-gray text-sm mb-6">
                 Fill out the form below and we will get back to you within 24 hours.
               </p>
 
-              <form onSubmit={handleSubmit} className="space-y-5">
-                {/* Honeypot for spam protection */}
-                <input type="checkbox" name="botcheck" style={{ display: 'none' }} />
-
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-strivana-dark mb-2">
-                    Full Name *
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    required
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-strivana-purple focus:ring-2 focus:ring-strivana-purple/20 outline-none transition-all text-sm"
-                    placeholder="John Smith"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-strivana-dark mb-2">
-                    Email Address *
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    required
-                    className={`w-full px-4 py-3 rounded-xl border focus:ring-2 outline-none transition-all text-sm ${
-                      getFieldError('email', formData.email)
-                        ? 'border-red-300 focus:border-red-400 focus:ring-red-100'
-                        : 'border-gray-200 focus:border-strivana-purple focus:ring-strivana-purple/20'
-                    }`}
-                    placeholder="john@company.com"
-                  />
-                  {getFieldError('email', formData.email) && (
-                    <p className="mt-1 text-sm text-red-500">{getFieldError('email', formData.email)}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label htmlFor="company" className="block text-sm font-medium text-strivana-dark mb-2">
-                    Company Name <span className="text-gray-400 font-normal">(optional)</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="company"
-                    name="company"
-                    value={formData.company}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-strivana-purple focus:ring-2 focus:ring-strivana-purple/20 outline-none transition-all text-sm"
-                    placeholder="Your Company"
-                  />
-                </div>
-
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <label htmlFor="message" className="block text-sm font-medium text-strivana-dark">
-                      How Can We Help? *
-                    </label>
-                    <span className={`text-xs ${formData.message.length > 500 ? 'text-red-500' : 'text-gray-400'}`}>
-                      {formData.message.length}/1000
-                    </span>
-                  </div>
-                  <textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    required
-                    maxLength={1000}
-                    rows={4}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-strivana-purple focus:ring-2 focus:ring-strivana-purple/20 outline-none transition-all text-sm resize-none"
-                    placeholder="Tell us what tasks you need help with, how many hours per week, and any specific skills required..."
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={isSubmitting || isSubmitted}
-                  className={`w-full py-4 px-6 font-medium rounded-xl transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed hover:shadow-glow ${
-                    isSubmitted 
-                      ? 'bg-green-500 hover:bg-green-600 text-white' 
-                      : 'bg-strivana-purple hover:bg-strivana-purple-dark text-white'
-                  }`}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 size={20} className="animate-spin" />
-                      Sending...
-                    </>
-                  ) : isSubmitted ? (
-                    <>
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      Message Sent!
-                    </>
-                  ) : (
-                    <>
-                      <Send size={20} />
-                      Send Message
-                    </>
-                  )}
-                </button>
-
-                <p className="text-xs text-strivana-gray text-center">
-                  By submitting, you agree to our privacy policy. We will never share your information.
-                </p>
-              </form>
+              {/* GHL Leads Form Iframe */}
+              <div className="w-full" style={{ minHeight: '1443px' }}>
+                <iframe
+                  src="https://api.leadconnectorhq.com/widget/form/ExjN3vXTELzzMPCIsAtV"
+                  style={{ width: '100%', height: '100%', border: 'none', borderRadius: '4px' }}
+                  id="inline-ExjN3vXTELzzMPCIsAtV"
+                  data-layout="{'id':'INLINE'}"
+                  data-trigger-type="alwaysShow"
+                  data-trigger-value=""
+                  data-activation-type="alwaysActivated"
+                  data-activation-value=""
+                  data-deactivation-type="neverDeactivate"
+                  data-deactivation-value=""
+                  data-form-name="Strivana Leads"
+                  data-height="1443"
+                  data-layout-iframe-id="inline-ExjN3vXTELzzMPCIsAtV"
+                  data-form-id="ExjN3vXTELzzMPCIsAtV"
+                  title="Strivana Leads"
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* GHL Form Embed Script */}
+      <script src="https://link.msgsndr.com/js/form_embed.js" />
     </section>
   );
 };
